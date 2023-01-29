@@ -50,7 +50,7 @@
                 if (marker) {
                     map.removeLayer(marker);
                 }
-                marker = L.marker(r.center).bindPopup(r.name || r.html).addTo(map).openPopup();
+                marker = L.marker(r.center).bindPopup(r.name || rSmart Farm).addTo(map).openPopup();
             }
         })
     });
