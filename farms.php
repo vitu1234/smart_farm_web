@@ -88,7 +88,7 @@
 <body>
 
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/dashboardSmart Farm">Smart Farm</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/dashboard.php">Smart Farm</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
             data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -109,19 +109,19 @@
             <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="dashboardSmart Farm">
+                        <a class="nav-link " aria-current="page" href="dashboard.php">
                             <span data-feather="home" class="align-text-bottom"></span>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="farmsSmart Farm">
+                        <a class="nav-link active" href="farms.php">
                             <span data-feather="columns" class="align-text-bottom"></span>
                             Farms
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="devicesSmart Farm">
+                        <a class="nav-link" href="devices.php">
                             <span data-feather="wifi" class="align-text-bottom"></span>
                             Devices
                         </a>

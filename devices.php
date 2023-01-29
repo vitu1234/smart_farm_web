@@ -81,7 +81,7 @@
 <body>
 
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/dashboardSmart Farm">Smart Farm</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/dashboard.php">Smart Farm</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
             data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -102,19 +102,19 @@
             <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="dashboardSmart Farm">
+                        <a class="nav-link " aria-current="page" href="dashboard.php">
                             <span data-feather="home" class="align-text-bottom"></span>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="farmsSmart Farm">
+                        <a class="nav-link " href="farms.php">
                             <span data-feather="columns" class="align-text-bottom"></span>
                             Farms
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link active" href="devicesSmart Farm">
+                        <a class="nav-link active" href="devices.php">
                             <span data-feather="wifi" class="align-text-bottom"></span>
                             Devices
                         </a>
@@ -167,7 +167,7 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Devices</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="add_devicesSmart Farm" type="button" class="btn btn-sm btn-outline-secondary">
+                    <a href="add_devices.php" type="button" class="btn btn-sm btn-outline-secondary">
                         <span data-feather="plus" class="align-text-bottom"></span>
                         Add Device
                     </a>

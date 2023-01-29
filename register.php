@@ -84,9 +84,9 @@
         <div>
             <h3 class="float-md-start mb-0">Smart Farm</h3>
             <nav class="nav nav-masthead justify-content-center float-md-end">
-                <a class="nav-link fw-bold py-1 px-0 " aria-current="page" href="indexSmart Farm">Home</a>
+                <a class="nav-link fw-bold py-1 px-0 " aria-current="page" href="index.php">Home</a>
                 <a class="nav-link fw-bold py-1 px-0" href="#">Contact</a>
-                <a class="nav-link fw-bold py-1 px-0 " href="loginSmart Farm">Login</a>
+                <a class="nav-link fw-bold py-1 px-0 " href="login.php">Login</a>
                 <a class="nav-link fw-bold py-1 px-0 active" href="#">Register</a>
             </nav>
         </div>
@@ -217,7 +217,7 @@
                     if (marker) {
                         map.removeLayer(marker);
                     }
-                    marker = L.marker(r.center).bindPopup(r.name || rSmart Farm).addTo(map).openPopup();
+                    marker = L.marker(r.center).bindPopup(r.name || r.php).addTo(map).openPopup();
                 }
             })
         });
