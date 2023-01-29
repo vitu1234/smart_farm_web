@@ -165,49 +165,55 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Unclaimed Devices</h1>
+                <h1 class="h2">Add Device</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop">
-                        <span data-feather="plus" class="align-text-bottom"></span>
-                        Add Device
-                    </button>
+                    <!--                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"-->
+                    <!--                            data-bs-target="#staticBackdrop">-->
+                    <!--                        <span data-feather="plus" class="align-text-bottom"></span>-->
+                    <!--                        Add Device-->
+                    <!--                    </button>-->
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-striped table-hover table-md">
-                    <thead>
-                    <tr>
-                        <th scope="col">Device ID</th>
-                        <th scope="col">Location</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1ddd43nbm4v3mv5bvmqvmwv5bnqasfngh</td>
-                        <td>Bangbae-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ">
-                                <span data-feather="check" class="align-text-bottom"></span>
-                                Select
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>32nnbdvbd5747383ndbjdkj</td>
-                        <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ">
-                                <span data-feather="check" class="align-text-bottom"></span>
-                                Select
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <form class="" autocomplete="off">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mt-2">
+                            <div id="dropdowns" class="dropdown">
+                                <button style="width: 100%" class="btn btn-secondary btn-lg dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    Farm
+                                </button>
+                                <ul class="dropdown-menu" style="text-align: center; width: 100%">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input autocomplete="off" type="text" class="form-control " id="floatingInput2"
+                                   placeholder="Device Name">
+                            <label class="text-dark" for="floatingInput2">Device Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <textarea autocomplete="off" type="text" class="form-control " id="textarea"
+                                      placeholder="Description"></textarea>
+                            <label class="text-dark" for="textarea">Description</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-dark">Save Device</button>
+            </form>
         </main>
     </div>
 </div>

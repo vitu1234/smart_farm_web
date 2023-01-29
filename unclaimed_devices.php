@@ -165,12 +165,13 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Devices</h1>
+                <h1 class="h2">Unclaimed Devices</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="unclaimed_devices.php" type="button" class="btn btn-sm btn-outline-secondary">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
                         <span data-feather="plus" class="align-text-bottom"></span>
-                        Unclaimed Devices
-                    </a>
+                        Add Device
+                    </button>
                 </div>
             </div>
 
@@ -179,126 +180,59 @@
                     <thead>
                     <tr>
                         <th scope="col">Device ID</th>
-                        <th scope="col">Farm Name</th>
-                        <th scope="col">Device Name</th>
                         <th scope="col">Location</th>
-                        <th scope="col">Description</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>1ddd43nbm4v3mv5bvmqvmwv5bnqasfngh</td>
-                        <td>Ndata Farm</td>
-                        <td>Temperature Sensor</td>
-                        <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>North East of the farm</td>
+                        <td>Bangbae-dong, Seocho-gu, Seoul, South Korea</td>
                         <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary " data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">
+                                <span data-feather="check" class="align-text-bottom"></span>
+                                Select
+                            </button>
                         </td>
                     </tr>
                     <tr>
                         <td>32nnbdvbd5747383ndbjdkj</td>
-                        <td>Farm3</td>
-                        <td>Soil Moisture Device</td>
                         <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>No Description</td>
                         <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary " data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">
+                                <span data-feather="check" class="align-text-bottom"></span>
+                                Select
+                            </button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>g3gg3vv4vvv6v7vqbqk</td>
-                        <td>Farm3</td>
-                        <td>Humidity Device</td>
-                        <td>Bangbae-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>No Description</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 </div>
-
-<!-- Modal Add Farm-->
+<!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Power Test</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="form2 px-1">
-                    <div class="form-floating mb-3">
-                        <input autocomplete="off" type="text" class="form-control" id="floatingInput2"
-                               placeholder="Ex: John Farm1">
-                        <label class="text-dark" for="floatingInput2">Device Name</label>
-                    </div>
-                    <small>Click On the map where your farm is located</small>
-                    <div class="form-floating mb-3">
-                        <div id="map"></div>
-                    </div>
-                </div>
+                Did the LEDs start blinking on the device?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-dark">Save Farm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <a href="add_devices.php?device_id=43nb34jbh34jgv34gvhqv4363" type="button"
+                   class="btn btn-outline-dark">Yes</a>
             </div>
-            </form>
         </div>
     </div>
 </div>
-
 
 <script src="js/bootstrap.bundle.min.js" type="application/javascript"></script>
 <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
