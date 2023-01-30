@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="add device page">
+      <change afterPath="$PROJECT_DIR$/form-test.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/includes/includes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/process/devices.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +54,7 @@
     "last_opened_file_path": "C:/xampp/htdocs/my_shop",
     "list.type.of.created.stylesheet": "CSS",
     "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>

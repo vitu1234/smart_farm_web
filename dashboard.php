@@ -162,7 +162,7 @@
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
                 <h1 class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
@@ -176,11 +176,111 @@
                 </div>
             </div>
 
-            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+            <!--            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
 
-            <h2>Manual Irrigation</h2>
-            <div class="table-responsive">
+            <h3>Devices</h3>
+            <div class="pt-3 pb-2 mb-3 border-top">
+                <div class="row mt-4 ">
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-body">
+                                <h5 class="card-title"><strong>Pump 1</strong></h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Farm 1</h6>
+                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
+                                    Moisture: 44%</p>
 
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
+
+                                </div>
+                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
+                                        after using</small></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-body">
+                                <h5 class="card-title"><strong>Pump 2</strong></h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Farm 3</h6>
+                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
+                                    Moisture: 44%</p>
+
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
+
+                                </div>
+                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
+                                        after using</small></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-body">
+                                <h5 class="card-title"><strong>Pump 133</strong></h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Farm 1</h6>
+                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
+                                    Moisture: 14%</p>
+
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
+
+                                </div>
+                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
+                                        after using</small></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-body">
+                                <h5 class="card-title"><strong>Pump 123</strong></h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Farm 1342</h6>
+                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
+                                    Moisture: 34%</p>
+
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
+
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
+
+                                </div>
+                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
+                                        after using</small></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
         </main>
     </div>
