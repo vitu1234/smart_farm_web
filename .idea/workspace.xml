@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="changed files to .php">
-      <change afterPath="$PROJECT_DIR$/unclaimed_devices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add_devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/add_devices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/devices.php" afterDir="false" />
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="add device page">
+      <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +67,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1674892931095</updated>
-      <workItem from="1674892937890" duration="25716000" />
+      <workItem from="1674892937890" duration="26043000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1674929618828</created>
@@ -100,7 +97,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674977545369</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add device page">
+      <created>1674979566399</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1674979566399</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -121,6 +125,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="first commit" />
     <MESSAGE value="changed files to .php" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed files to .php" />
+    <MESSAGE value="add device page" />
+    <option name="LAST_COMMIT_MESSAGE" value="add device page" />
   </component>
 </project>
