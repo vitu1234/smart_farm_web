@@ -1,4 +1,8 @@
 <?php
+include("../includes/includes.php");
+
+
+
 //include("../includes/includes.php");
 $url = 'http://192.168.13.200:8000/switch_by_device';
 if (isset($_POST['pump_device_id']) && isset($_POST['pump_action'])) {

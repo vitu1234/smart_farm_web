@@ -1,6 +1,6 @@
 <?php
-require '../vendor/autoload.php';
-$evn_file ="../.env";
+require 'vendor/autoload.php';
+$evn_file ="./.env";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, $evn_file);
 $dotenv->load();
 try {

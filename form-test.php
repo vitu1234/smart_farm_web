@@ -1,3 +1,10 @@
+<?php
+require 'vendor/autoload.php';
+$evn_file ="./.env";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+echo $_ENV['VAR_NAME'];
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,7 +20,6 @@
     <input type="text" name="pump_device_id">
     <input type="text" name="pump_action">
     <button type="submit" name="btn">Submit</button>
-
 </form>
 </body>
 </html>
