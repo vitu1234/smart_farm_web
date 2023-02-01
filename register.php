@@ -1,3 +1,8 @@
+<?php
+    include("includes.php");
+    $api = $_ENV['API'];
+//    header("Access-Control-Allow-Origin: *");
+?>
 <!doctype html>
 <html lang="en" class="h-100">
 <head>
@@ -93,32 +98,48 @@
     </header>
 
     <main class="px-md-5 form-signin w-100 ">
-        <form class="" autocomplete="off">
+        <form id="user_register_form" method="post" class="" autocomplete="off">
             <!--      <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">-->
             <h5 class="h5 mb-3 fw-normal"><strong>Register account</strong></h5>
 
             <div class="form1 px-md-5">
                 <div class="form-floating mb-3">
-                    <input autocomplete="off" type="text" class="form-control" id="floatingInput1"
-                           placeholder="Ex: John">
-                    <label class="text-dark" for="floatingInput1">Username</label>
+                    <input autocomplete="off" type="text" class="form-control" id="username" name="username"
+                           placeholder="Ex: JayJay" required/>
+                    <label class="text-dark" for="username">Username</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input autocomplete="off" type="text" class="form-control" id="first_name" name="first_name"
+                           placeholder="Ex: John" required/>
+                    <label class="text-dark" for="first_name">First Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input autocomplete="off" type="text" class="form-control" id="last_name" name="last_name"
+                           placeholder="Ex: Doe" required/>
+                    <label class="text-dark" for="last_name">Last Name</label>
                 </div>
 
 
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label class="text-dark" for="floatingInput">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required/>
+                    <label class="text-dark" for="email">Email address</label>
                 </div>
 
                 <div class="form-floating mt-3 mb-1">
-                    <input type="password" class="form-control form-control-sm" id="floatingPassword"
+                    <input type="password" class="form-control form-control-sm" id="password" name="password" required
                            placeholder="Password">
-                    <label class=" text-dark" for="floatingPassword">Password</label>
+                    <label class=" text-dark" for="password">Password</label>
                 </div>
 
                 <button onclick="hideForm1()" class="w-100 btn btn-md btn-dark text-light mt-3" type="button">Next
                 </button>
             </div>
+
+            <input type="hidden" name="longtude" id="longtude" value="" required>
+            <input type="hidden" name="latitude" id="latitude" value="" required>
+            <input type="hidden" name="address" id="address" value="" required>
+
 
             <div class="form2 px-md-5">
                 <div class="col-md-3 mb-3">
@@ -127,16 +148,16 @@
                     </button>
                 </div>
                 <div class="form-floating mb-3">
-                    <input autocomplete="off" type="text" class="form-control" id="floatingInput2"
-                           placeholder="Ex: John Farm1">
-                    <label class="text-dark" for="floatingInput2">Farm Name</label>
+                    <input autocomplete="off" type="text" class="form-control" id="farm_name" name="farm_name"
+                           placeholder="Ex: John Farm1" required>
+                    <label class="text-dark" for="farm_name">Farm Name</label>
                 </div>
                 <small>Click On the map where your farm is located</small>
                 <div class="form-floating mb-3">
                     <div id="map"></div>
                 </div>
 
-                <button class="w-100 btn btn-md btn-dark text-light mt-3" type="submit">Finish Registration</button>
+                <button id="btn_register" class="w-100 btn btn-md btn-dark text-light mt-3" type="submit">Finish Registration</button>
             </div>
 
 
@@ -162,6 +183,12 @@
 <!--        crossorigin=""></script>-->
 <script src="https://unpkg.com/leaflet@latest/dist/leaflet-src.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder@latest/dist/Control.Geocoder.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api ="<?php echo $api; ?>"
+</script>
+
+<script src="js/js.js"></script>
 
 <script type="text/javascript">
     <!--    setup map-->
@@ -210,10 +237,12 @@
         map.on('click', function (e) {
             control.options.geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function (results) {
                 var r = results[0];
-
                 if (r) {
                     var lat = results[0].center.lat;
-                    var lng = results[0].center.lng
+                    var lng = results[0].center.lng;
+                    $("#latitude").val(lat)
+                    $("#longtude").val(lng)
+                    $("#address").val(r.name)
                     if (marker) {
                         map.removeLayer(marker);
                     }
@@ -222,33 +251,38 @@
             })
         });
     })();
-    /*
 
-        var map = L.map('map').setView([37.495103226722875, 126.96072667120161], 13);
-        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-        var popup = L.popup();
-
-        function onMapClick(e) {
-            // $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=47.217954&lon=-1.552918', function(data){
-            //     console.log(data.address.road );
-            // });
-            popup
-                .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(map);
-        }
-
-        map.on('click', onMapClick);
-*/
     $(document).ready(() => {
         // alert("ffj")
         $(".form2").hide()
+
+
     })
 
     function hideForm1() {
+        if ($("#username").val().length == 0){
+            setTimeout(function() { $('#username').focus(); }, 50)
+            return
+        }
+        if ($("#first_name").val().length == 0){
+            setTimeout(function() { $('#first_name').focus(); }, 50)
+            return
+        }
+        if ($("#last_name").val().length == 0){
+            setTimeout(function() { $('#last_name').focus(); }, 50)
+            return
+        }
+
+        if ($("#email").val().length == 0){
+            setTimeout(function() { $('#email').focus(); }, 50)
+            return
+        }
+
+        if ($("#password").val().length == 0){
+            setTimeout(function() { $('#password').focus(); }, 50)
+            return
+        }
+
         $(".form1").hide("500")
         $(".form2").show("500")
     }

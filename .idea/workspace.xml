@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="add device page">
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="api user logged in">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,9 +17,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -47,13 +49,18 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/xampp/htdocs/my_shop",
+    "last_opened_file_path": "C:/xampp/htdocs/smart_farm_web",
     "list.type.of.created.stylesheet": "CSS",
     "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\smart_farm_web" />
+      <recent name="C:\xampp\htdocs\smart_farm_web\includes" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\smart_farm_web" />
       <recent name="C:\xampp\htdocs\smart_farm_web\css" />
@@ -104,7 +111,28 @@
       <option name="project" value="LOCAL" />
       <updated>1674979566399</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="connecting to api">
+      <created>1675090111553</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1675090111553</updated>
+    </task>
+    <task id="LOCAL-00007" summary="api user registered">
+      <created>1675258998078</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1675258998078</updated>
+    </task>
+    <task id="LOCAL-00008" summary="api user logged in">
+      <created>1675260829506</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1675260829506</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,6 +154,9 @@
     <MESSAGE value="first commit" />
     <MESSAGE value="changed files to .php" />
     <MESSAGE value="add device page" />
-    <option name="LAST_COMMIT_MESSAGE" value="add device page" />
+    <MESSAGE value="connecting to api" />
+    <MESSAGE value="api user registered" />
+    <MESSAGE value="api user logged in" />
+    <option name="LAST_COMMIT_MESSAGE" value="api user logged in" />
   </component>
 </project>

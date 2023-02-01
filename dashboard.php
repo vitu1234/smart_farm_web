@@ -1,3 +1,14 @@
+<?php
+include("includes.php");
+session_start();
+
+$api = $_ENV['API'];
+if (!isset($_SESSION['access'])) {
+    header('Location:login.php');
+}
+$access_token = $_SESSION['access'];
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -162,7 +173,7 @@
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
                 <h1 class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
@@ -176,11 +187,14 @@
                 </div>
             </div>
 
-            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+            <!--            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
 
-            <h2>Manual Irrigation</h2>
-            <div class="table-responsive">
+            <h3>Devices</h3>
+            <div class="pt-3 pb-2 mb-3 border-top">
+                <div class="row mt-4 " id="devices">
 
+
+                </div>
             </div>
         </main>
     </div>
@@ -194,5 +208,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
         crossorigin="anonymous"></script>
 <script src="js/dashboard.js"></script>
+<script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api = "<?php echo $api; ?>"
+
+</script>
+<script src="js/js.js"></script>
+<script>
+    $(document).ready(() => {
+        get_all_user_devices("<?php echo $access_token; ?>")
+    })
+</script>
 </body>
 </html>
