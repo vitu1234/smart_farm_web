@@ -244,14 +244,19 @@ function get_all_user_devices(token) {
                                 '                                    Moisture: ' + value.soil_moisture + '%</p>\n' +
                                 '\n' + '<p class="mt-1"><small><em>Last record: ' + value.timestamp + '</em></small></p>' +
                                 '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
-                                '                                    <input onclick="device_action()" type="radio" class="btn-check" name="btnradio" id="btnradio1' + value.device_id + '"\n' +
+
+
+                                '                                    <input value="true" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio1' + value.device_id + '"\n' +
                                 '                                           autocomplete="off" ' + switch_on + '>\n' +
-                                '                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>\n' +
+                                '                                    <label class="btn btn-outline-secondary" for="btnradio1' + value.device_id + '">ON</label>\n' +
                                 '\n' +
-                                '                                    <input onclick="device_action()" type="radio" class="btn-check" name="btnradio" id="btnradio2' + value.device_id + '"\n' +
+
+
+                                '                                    <input value="false" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio2' + value.device_id + '"\n' +
                                 '                                           autocomplete="off" ' + switch_off + '>\n' +
-                                '                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>\n' +
+                                '                                    <label class="btn btn-outline-danger" for="btnradio2' + value.device_id + '">OFF</label>\n' +
                                 '\n' +
+
                                 '                                </div>\n' +
                                 '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump\n' +
                                 '                                        after using</small></i>\n' +
@@ -318,8 +323,87 @@ function get_all_user_devices(token) {
     ;
 }
 
-function device_action() {
+function set_device_action(device_id) {
+    Swal.showLoading()
+    var checked = $('input[name=btnradio' + device_id + ']:checked').val()
+    var form_data = {"pump_action": checked, "pump_device_id": device_id};
 
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/switch_by_device",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        Swal.close()
+        console.log(response)
+        var action = ''
+        if (checked == 'True') {
+            action = 'turned on'
+        } else {
+            action = "turned off"
+        }
+
+        if (response.error == false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Device has been ' + action
+            })
+            setTimeout(function () {
+                // window.location.href = 'dashboard.php';
+            }, 1500);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        Swal.close();
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
 }
 
 $(document).ready(() => {
