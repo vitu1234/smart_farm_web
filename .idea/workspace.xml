@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="api user registered">
-      <change afterPath="$PROJECT_DIR$/process/session.php" afterDir="false" />
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="api user logged in">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +125,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675258998078</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="api user logged in">
+      <created>1675260829506</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1675260829506</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,6 +156,7 @@
     <MESSAGE value="add device page" />
     <MESSAGE value="connecting to api" />
     <MESSAGE value="api user registered" />
-    <option name="LAST_COMMIT_MESSAGE" value="api user registered" />
+    <MESSAGE value="api user logged in" />
+    <option name="LAST_COMMIT_MESSAGE" value="api user logged in" />
   </component>
 </project>

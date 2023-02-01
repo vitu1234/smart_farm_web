@@ -32,11 +32,22 @@ $("#user_register_form").on('submit', function (e) {
                 $("#register_btn").text('Register');
                 // $("#user_register_form")[0].reset();
                 if (response.error == false) {
-                    Swal.fire(
-                        'Registered!',
-                        'You have successfully registered!',
-                        'success'
-                    )
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Registered successfully'
+                    })
                     $("#user_register_form")[0].reset();
                     setTimeout(function () {
                         window.location.href = 'login.php';
@@ -136,11 +147,22 @@ $("#login_form").on('submit', function (e) {
         $("#login_btn").text('Sign in');
         $("#login_form")[0].reset();
         if (response.error == false) {
-            Swal.fire(
-                'Login!',
-                'You have successfully logged in!',
-                'success'
-            )
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Signed in successfully'
+            })
             $.post("process/session.php", response);
             setTimeout(function () {
                 window.location.href = 'dashboard.php';
@@ -183,4 +205,123 @@ $("#login_form").on('submit', function (e) {
 
     e.preventDefault();
     e.stopImmediatePropagation();
+})
+
+//user devices
+function get_all_user_devices(token) {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/devices",
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.error == false) {
+                console.log(response)
+                user_devices = response.user_devices
+                if (user_devices.length > 0) {
+                    var cards = ''
+                    $.each(user_devices, function (key, value) {
+                            console.log('caste: ' + value.device_name + ' | id: ' + value.id);
+                            switch_on = ''
+                            switch_off = ''
+                            if (value.switch_status == true) {
+                                switch_on = 'checked'
+                                switch_off = ''
+                            } else {
+                                switch_off = 'checked'
+                                switch_on = ''
+                            }
+                            card = '<div class="col-md-3">\n' +
+                                '                        <div class="card" style="width: 100%;">\n' +
+                                '                            <div class="card-body">\n' +
+                                '                                <h5 class="card-title"><strong>' + value.device_name + '</strong></h5>\n' +
+                                '                                <h6 class="card-subtitle mb-2 text-muted">' + value.farm_name + '</h6>\n' +
+                                '                                <p class="card-text">Temp: ' + value.temperature + '°C <strong>|</strong> Humidity: ' + value.humidity + '% <strong>|</strong> Soil\n' +
+                                '                                    Moisture: ' + value.soil_moisture + '%</p>\n' +
+                                '\n' + '<p class="mt-1"><small><em>Last record: ' + value.timestamp + '</em></small></p>' +
+                                '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
+                                '                                    <input onclick="device_action()" type="radio" class="btn-check" name="btnradio" id="btnradio1' + value.device_id + '"\n' +
+                                '                                           autocomplete="off" ' + switch_on + '>\n' +
+                                '                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>\n' +
+                                '\n' +
+                                '                                    <input onclick="device_action()" type="radio" class="btn-check" name="btnradio" id="btnradio2' + value.device_id + '"\n' +
+                                '                                           autocomplete="off" ' + switch_off + '>\n' +
+                                '                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>\n' +
+                                '\n' +
+                                '                                </div>\n' +
+                                '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump\n' +
+                                '                                        after using</small></i>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>'
+                            cards += card
+                        }
+                    );
+                    $("#devices").html(cards)
+                } else {
+                    $("#devices").html('<div class="col-md-3"><p class="text-dark">No devices found for your account, please add devices</p> <a class="btn btn-outline-danger btn-md mt-2"  href="unclaimed_devices.php">here</a></div>');
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+    ;
+}
+
+function device_action() {
+
+}
+
+$(document).ready(() => {
+    // Swal.showLoading()
 })

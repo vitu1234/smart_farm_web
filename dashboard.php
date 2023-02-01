@@ -191,104 +191,7 @@ $access_token = $_SESSION['access'];
 
             <h3>Devices</h3>
             <div class="pt-3 pb-2 mb-3 border-top">
-                <div class="row mt-4 ">
-                    <div class="col-md-3">
-                        <div class="card" style="width: 100%;">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>Pump 1</strong></h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Farm 1</h6>
-                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
-                                    Moisture: 44%</p>
-
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
-
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
-
-                                </div>
-                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
-                                        after using</small></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card" style="width: 100%;">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>Pump 2</strong></h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Farm 3</h6>
-                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
-                                    Moisture: 44%</p>
-
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
-
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
-
-                                </div>
-                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
-                                        after using</small></i>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-3">
-                        <div class="card" style="width: 100%;">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>Pump 133</strong></h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Farm 1</h6>
-                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
-                                    Moisture: 14%</p>
-
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
-
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
-
-                                </div>
-                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
-                                        after using</small></i>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-3">
-                        <div class="card" style="width: 100%;">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>Pump 123</strong></h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Farm 1342</h6>
-                                <p class="card-text">Temp: 25C <strong>|</strong> Humidity: 20% <strong>|</strong> Soil
-                                    Moisture: 34%</p>
-
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-secondary" for="btnradio1">ON</label>
-
-                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-danger" for="btnradio2">OFF</label>
-
-                                </div>
-                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump
-                                        after using</small></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row mt-4 " id="devices">
 
 
                 </div>
@@ -305,5 +208,17 @@ $access_token = $_SESSION['access'];
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
         crossorigin="anonymous"></script>
 <script src="js/dashboard.js"></script>
+<script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api = "<?php echo $api; ?>"
+
+</script>
+<script src="js/js.js"></script>
+<script>
+    $(document).ready(() => {
+        get_all_user_devices("<?php echo $access_token; ?>")
+    })
+</script>
 </body>
 </html>
