@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="adding device action">
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="added device actuation actions">
+      <change afterPath="$PROJECT_DIR$/css/datatables.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/device_edit.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/farm_devices.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/farm_edit.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/datatables.min.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/devices.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/farms.php" beforeDir="false" afterPath="$PROJECT_DIR$/farms.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -139,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675265785292</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="added device actuation actions">
+      <created>1675275217640</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1675275217640</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,6 +179,7 @@
     <MESSAGE value="api user registered" />
     <MESSAGE value="api user logged in" />
     <MESSAGE value="adding device action" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding device action" />
+    <MESSAGE value="added device actuation actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="added device actuation actions" />
   </component>
 </project>

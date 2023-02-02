@@ -207,8 +207,8 @@ $("#login_form").on('submit', function (e) {
     e.stopImmediatePropagation();
 })
 
-//user devices
-function get_all_user_devices(token) {
+//user devices on dashboard
+function get_all_user_devices_dashboard(token) {
     Swal.showLoading()
     $.ajax({
         headers: {
@@ -220,12 +220,10 @@ function get_all_user_devices(token) {
         success: function (response) {
             Swal.close()
             if (response.error == false) {
-                console.log(response)
                 user_devices = response.user_devices
                 if (user_devices.length > 0) {
                     var cards = ''
                     $.each(user_devices, function (key, value) {
-                            console.log('caste: ' + value.device_name + ' | id: ' + value.id);
                             switch_on = ''
                             switch_off = ''
                             if (value.switch_status == true) {
@@ -323,10 +321,130 @@ function get_all_user_devices(token) {
     ;
 }
 
+//user devices on devices page
+function get_all_user_devices(token) {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/devices",
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.error == false) {
+                user_devices = response.user_devices
+                if (user_devices.length > 0) {
+                    var rows = ''
+                    $.each(user_devices, function (key, value) {
+
+                            if (value.address == '') {
+                                address = '--'
+                            } else {
+                                address = value.address
+                            }
+
+                            if (value.description == '' || value.description == null) {
+                                description = '--'
+                            } else {
+                                description = value.description
+                            }
+                            row = '<tr>\n' +
+                                '                        <td>' + value.device_id + '</td>\n' +
+                                '                        <td>' + value.device_name + '</td>\n' +
+                                '                        <td>' + value.farm_name + '</td>\n' +
+                                '                        <td>' + address + '</td>\n' +
+                                '                        <td>' + description + '</td>\n' +
+                                '                        <td>\n' +
+                                '                            <div class="dropdown">\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"\n' +
+                                '                                        data-bs-toggle="dropdown" aria-expanded="false">\n' +
+                                '                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>\n' +
+                                '                                    Action\n' +
+                                '                                </button>\n' +
+                                '                                <ul class="dropdown-menu">\n' +
+                                '                                    <li><a class="dropdown-item text-warning" href="device_edit.php?device_id=' + value.id + '">\n' +
+                                '                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify\n' +
+                                '                                    </a></li>\n' +
+                                '                                    <li><a onclick="deleteDevice(\'' + value.id + '\')" class="dropdown-item text-danger" href="#">\n' +
+                                '                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete\n' +
+                                '                                    </a></li>\n' +
+                                '                                </ul>\n' +
+                                '                            </div>\n' +
+                                '                        </td>\n' +
+                                '                    </tr>'
+                            rows += row
+                        }
+                    );
+
+                    $("#table_body").html(rows);
+                    $("table").DataTable({
+                        order: [0, 'desc']
+                    });
+                } else {
+                    $("table").html('<div class="col-md-3"><p class="text-dark">No devices found for your account, please add first</p> <a class="btn btn-outline-danger btn-md mt-2"  href="unclaimed_devices.php">here</a></div>');
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+    ;
+}
+
+
+//turn on/off devices
 function set_device_action(device_id) {
     Swal.showLoading()
     var checked = $('input[name=btnradio' + device_id + ']:checked').val()
     var form_data = {"pump_action": checked, "pump_device_id": device_id};
+
 
     $.ajax({ //make ajax request to cart_process.php
         headers: {
@@ -341,9 +459,9 @@ function set_device_action(device_id) {
         data: form_data
     }).done(function (response) { //on Ajax success
         Swal.close()
-        console.log(response)
+
         var action = ''
-        if (checked == 'True') {
+        if (checked == 'true') {
             action = 'turned on'
         } else {
             action = "turned off"
@@ -381,11 +499,15 @@ function set_device_action(device_id) {
     }).fail(function (jqXHR, exception) {
         Swal.close();
         var msg = '';
-        $("#login_btn").text('Sign in');
         if (jqXHR.status === 0) {
             msg = 'Network or API error.\n Verify Network.';
         } else if (jqXHR.status == 404) {
-            msg = 'Bad request. [404]';
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
         } else if (jqXHR.status == 500) {
             msg = 'Internal Server Error [500].';
         } else if (exception === 'parsererror') {
@@ -405,6 +527,214 @@ function set_device_action(device_id) {
         })
     });
 }
+
+//user farms
+function get_all_user_farms(token) {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/farms",
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.error == false) {
+                farms = response.user_farms
+                if (farms.length > 0) {
+                    var rows = ''
+                    $.each(farms, function (key, value) {
+
+                            if (value.address == '') {
+                                address = '--'
+                            } else {
+                                address = value.address
+                            }
+                            row = '<tr>\n' +
+                                '                        <td>' + value.farm_name + '</td>\n' +
+                                '                        <td>' + value.devices_total + '</td>\n' +
+                                '                        <td>' + address + '</td>\n' +
+                                '                        <td>\n' +
+                                '                            <div class="dropdown">\n' +
+                                '                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"\n' +
+                                '                                        data-bs-toggle="dropdown" aria-expanded="false">\n' +
+                                '                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>\n' +
+                                '                                    Action\n' +
+                                '                                </button>\n' +
+                                '                                <ul class="dropdown-menu">\n' +
+                                '                                    <li><a class="dropdown-item" href="farm_devices.php?farm_id=' + value.id + '">\n' +
+                                '                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices\n' +
+                                '                                    </a></li>\n' +
+                                '                                    <li><a class="dropdown-item text-warning" href="farm_edit.php?farm_id=' + value.id + '">\n' +
+                                '                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify\n' +
+                                '                                    </a></li>\n' +
+                                '                                    <li><a onclick="deleteFarm(\'' + value.id + '\')" class="dropdown-item text-danger" href="#">\n' +
+                                '                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete\n' +
+                                '                                    </a></li>\n' +
+                                '                                </ul>\n' +
+                                '                            </div>\n' +
+                                '                        </td>\n' +
+                                '                    </tr>'
+                            rows += row
+                        }
+                    );
+
+                    $("#table_body").html(rows);
+                    $("table").DataTable({
+                        order: [0, 'desc']
+                    });
+                } else {
+                    $("table").html('<div class="col-md-3"><p class="text-dark">No farms found for your account, please add first</p> </div>');
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+    ;
+}
+
+//delete farm
+function deleteFarm(id) {
+    alert('will delete farm: ' + id)
+}
+
+//delete device
+
+function deleteDevice(id) {
+    alert('will delete device: ' + id)
+}
+
+//add farm
+$("#addFarmForm").on('submit', function (e) {
+    var form_data = $(this).serialize();
+    $("#add_farm_btn").html('<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span> Saving...');
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/add_farm",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        $("#add_farm_btn").text('Save Farm');
+        // $("#user_register_form")[0].reset();
+        if (response.error == false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Saved successfully'
+            })
+            $("#addFarmForm")[0].reset();
+            setTimeout(function () {
+                location.reload()
+            }, 1500);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        var msg = '';
+        $("#add_farm_btn").text('Register');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+});
+
 
 $(document).ready(() => {
     // Swal.showLoading()

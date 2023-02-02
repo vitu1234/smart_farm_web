@@ -1,3 +1,14 @@
+<?php
+include("includes.php");
+session_start();
+
+$api = $_ENV['API'];
+if (!isset($_SESSION['access'])) {
+    header('Location:login.php');
+}
+$access_token = $_SESSION['access'];
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,6 +20,7 @@
     <title>Smart Farm</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
 
 
     <!-- Favicons -->
@@ -87,11 +99,9 @@
             aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-           aria-label="Search">
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Sign out</a>
+            <a class="nav-link px-3" href="#">Logout</a>
         </div>
     </div>
 </header>
@@ -174,92 +184,44 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-responsive" id="devices">
                 <table class="table table-striped table-hover table-md">
                     <thead>
                     <tr>
                         <th scope="col">Device ID</th>
-                        <th scope="col">Farm Name</th>
                         <th scope="col">Device Name</th>
+                        <th scope="col">Farm Name</th>
                         <th scope="col">Location</th>
                         <th scope="col">Description</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>1ddd43nbm4v3mv5bvmqvmwv5bnqasfngh</td>
-                        <td>Ndata Farm</td>
-                        <td>Temperature Sensor</td>
-                        <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>North East of the farm</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>32nnbdvbd5747383ndbjdkj</td>
-                        <td>Farm3</td>
-                        <td>Soil Moisture Device</td>
-                        <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>No Description</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>g3gg3vv4vvv6v7vqbqk</td>
-                        <td>Farm3</td>
-                        <td>Humidity Device</td>
-                        <td>Bangbae-dong, Seocho-gu, Seoul, South Korea</td>
-                        <td>No Description</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
+                    <tbody id="table_body">
+<!--                    <tr>-->
+<!--                        <td>1ddd43nbm4v3mv5bvmqvmwv5bnqasfngh</td>-->
+<!--                        <td>Ndata Farm</td>-->
+<!--                        <td>Temperature Sensor</td>-->
+<!--                        <td>Yangjae 1(il)-dong, Seocho-gu, Seoul, South Korea</td>-->
+<!--                        <td>North East of the farm</td>-->
+<!--                        <td>-->
+<!--                            <div class="dropdown">-->
+<!--                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"-->
+<!--                                        data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>-->
+<!--                                    Action-->
+<!--                                </button>-->
+<!--                                <ul class="dropdown-menu">-->
+<!--                                    <li><a class="dropdown-item text-warning" href="#">-->
+<!--                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify-->
+<!--                                    </a></li>-->
+<!--                                    <li><a class="dropdown-item text-danger" href="#">-->
+<!--                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete-->
+<!--                                    </a></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
 
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
 
                     </tbody>
                 </table>
@@ -302,12 +264,27 @@
 
 <script src="js/bootstrap.bundle.min.js" type="application/javascript"></script>
 <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+<script src="js/datatables.min.js" type="text/javascript" ></script>
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
         crossorigin="anonymous"></script>
 <script src="js/dashboard.js"></script>
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet-src.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder@latest/dist/Control.Geocoder.js"></script>
 
+<script src="js/map.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api = "<?php echo $api; ?>"
+    var token ="<?php echo $access_token; ?>"
+</script>
+<script src="js/js.js"></script>
+<script>
+    $(document).ready(() => {
+        get_all_user_devices("<?php echo $access_token; ?>")
+    })
+</script>
 </body>
 </html>
