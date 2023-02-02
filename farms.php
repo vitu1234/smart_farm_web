@@ -1,3 +1,14 @@
+<?php
+include("includes.php");
+session_start();
+
+$api = $_ENV['API'];
+if (!isset($_SESSION['access'])) {
+    header('Location:login.php');
+}
+$access_token = $_SESSION['access'];
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,10 +22,13 @@
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@latest/dist/Control.Geocoder.css"/>
+
+    <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
+
     <style>
         #map {
             width: 100%;
-            height: 200px;
+            height: 300px;
         }
     </style>
 
@@ -94,11 +108,9 @@
             aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-           aria-label="Search">
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Sign out</a>
+            <a class="nav-link px-3" href="#">Logout</a>
         </div>
     </div>
 </header>
@@ -182,165 +194,41 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-responsive" id="devices">
                 <table class="table table-striped table-hover table-md">
                     <thead>
                     <tr>
                         <th scope="col">Farm Name</th>
+                        <th scope="col">Devices</th>
                         <th scope="col">Location</th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>data</td>
-                        <td>placeholder</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>random</td>
-                        <td>layout</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>irrelevant</td>
-                        <td>text</td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>
-                                    Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
-                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices
-                                    </a></li>
-                                    <li><a class="dropdown-item text-warning" href="#">
-                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify
-                                    </a></li>
-                                    <li><a class="dropdown-item text-danger" href="#">
-                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                    <tbody id="table_body">
+<!--                    <tr>-->
+<!--                        <td>data</td>-->
+<!--                        <td>placeholder</td>-->
+<!--                        <td>-->
+<!--                            <div class="dropdown">-->
+<!--                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"-->
+<!--                                        data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>-->
+<!--                                    Action-->
+<!--                                </button>-->
+<!--                                <ul class="dropdown-menu">-->
+<!--                                    <li><a class="dropdown-item" href="#">-->
+<!--                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices-->
+<!--                                    </a></li>-->
+<!--                                    <li><a class="dropdown-item text-warning" href="#">-->
+<!--                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify-->
+<!--                                    </a></li>-->
+<!--                                    <li><a class="dropdown-item text-danger" href="#">-->
+<!--                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete-->
+<!--                                    </a></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
 
                     </tbody>
                 </table>
@@ -358,13 +246,16 @@
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Farm</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class="" autocomplete="off">
+            <form method="post" id="addFarmForm" class="" autocomplete="off">
                 <div class="modal-body">
                     <div class="form2 px-1">
+                        <input type="hidden" name="longtude" id="longtude" value="" required>
+                        <input type="hidden" name="latitude" id="latitude" value="" required>
+                        <input type="hidden" name="address" id="address" value="" required>
                         <div class="form-floating mb-3">
-                            <input autocomplete="off" type="text" class="form-control" id="floatingInput2"
-                                   placeholder="Ex: John Farm1">
-                            <label class="text-dark" for="floatingInput2">Farm Name</label>
+                            <input autocomplete="off" type="text" class="form-control" id="farm_name" name="farm_name"
+                                   placeholder="Ex: John Farm1" required>
+                            <label class="text-dark" for="farm_name">Farm Name</label>
                         </div>
                         <small>Click On the map where your farm is located</small>
                         <div class="form-floating mb-3">
@@ -374,7 +265,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-dark">Save Farm</button>
+                    <button id="add_farm_btn" type="submit" class="btn btn-outline-dark">Save Farm</button>
                 </div>
             </form>
         </div>
@@ -384,6 +275,7 @@
 
 <script src="js/bootstrap.bundle.min.js" type="application/javascript"></script>
 <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+<script src="js/datatables.min.js" type="text/javascript" ></script>
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
         crossorigin="anonymous"></script>
@@ -394,5 +286,16 @@
 <script src="https://unpkg.com/leaflet-control-geocoder@latest/dist/Control.Geocoder.js"></script>
 
 <script src="js/map.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api = "<?php echo $api; ?>"
+    var token ="<?php echo $access_token; ?>"
+</script>
+<script src="js/js.js"></script>
+<script>
+    $(document).ready(() => {
+        get_all_user_farms("<?php echo $access_token; ?>")
+    })
+</script>
 </body>
 </html>
