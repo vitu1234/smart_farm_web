@@ -236,6 +236,7 @@ function get_all_user_devices_dashboard(token) {
                             card = '<div class="col-md-3">\n' +
                                 '                        <div class="card" style="width: 100%;">\n' +
                                 '                            <div class="card-body">\n' +
+                                '                                <a href="device_settings.php?device_id=' + value.id + '" class="float-end"><strong>Setting</strong></a>\n' +
                                 '                                <h5 class="card-title"><strong>' + value.device_name + '</strong></h5>\n' +
                                 '                                <h6 class="card-subtitle mb-2 text-muted">' + value.farm_name + '</h6>\n' +
                                 '                                <p class="card-text">Temp: ' + value.temperature + '°C <strong>|</strong> Humidity: ' + value.humidity + '% <strong>|</strong> Soil\n' +
@@ -542,50 +543,64 @@ function get_all_user_farms(token) {
             Swal.close()
             if (response.error == false) {
                 farms = response.user_farms
-                if (farms.length > 0) {
-                    var rows = ''
+
+                //check if listing farms or adding device
+                if ($("#add_device_form").length > 0) {
+                    var li = '<option selected>-Select-</option>'
                     $.each(farms, function (key, value) {
 
-                            if (value.address == '') {
-                                address = '--'
-                            } else {
-                                address = value.address
-                            }
-                            row = '<tr>\n' +
-                                '                        <td>' + value.farm_name + '</td>\n' +
-                                '                        <td>' + value.devices_total + '</td>\n' +
-                                '                        <td>' + address + '</td>\n' +
-                                '                        <td>\n' +
-                                '                            <div class="dropdown">\n' +
-                                '                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"\n' +
-                                '                                        data-bs-toggle="dropdown" aria-expanded="false">\n' +
-                                '                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>\n' +
-                                '                                    Action\n' +
-                                '                                </button>\n' +
-                                '                                <ul class="dropdown-menu">\n' +
-                                '                                    <li><a class="dropdown-item" href="farm_devices.php?farm_id=' + value.id + '">\n' +
-                                '                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices\n' +
-                                '                                    </a></li>\n' +
-                                '                                    <li><a class="dropdown-item text-warning" href="farm_edit.php?farm_id=' + value.id + '">\n' +
-                                '                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify\n' +
-                                '                                    </a></li>\n' +
-                                '                                    <li><a onclick="deleteFarm(\'' + value.id + '\')" class="dropdown-item text-danger" href="#">\n' +
-                                '                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete\n' +
-                                '                                    </a></li>\n' +
-                                '                                </ul>\n' +
-                                '                            </div>\n' +
-                                '                        </td>\n' +
-                                '                    </tr>'
-                            rows += row
+                            item = '<option value="' + value.id + '">' + value.farm_name + '</option>'
+                            li += item
                         }
                     );
-
-                    $("#table_body").html(rows);
-                    $("table").DataTable({
-                        order: [0, 'desc']
-                    });
+                    $("#dropdown_menu_farms").html(li);
                 } else {
-                    $("table").html('<div class="col-md-3"><p class="text-dark">No farms found for your account, please add first</p> </div>');
+
+                    if (farms.length > 0) {
+                        var rows = ''
+                        $.each(farms, function (key, value) {
+
+                                if (value.address == '') {
+                                    address = '--'
+                                } else {
+                                    address = value.address
+                                }
+                                row = '<tr>\n' +
+                                    '                        <td>' + value.farm_name + '</td>\n' +
+                                    '                        <td>' + value.devices_total + '</td>\n' +
+                                    '                        <td>' + address + '</td>\n' +
+                                    '                        <td>\n' +
+                                    '                            <div class="dropdown">\n' +
+                                    '                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"\n' +
+                                    '                                        data-bs-toggle="dropdown" aria-expanded="false">\n' +
+                                    '                                    <span data-feather="more-horizontal" class="align-text-bottom"></span>\n' +
+                                    '                                    Action\n' +
+                                    '                                </button>\n' +
+                                    '                                <ul class="dropdown-menu">\n' +
+                                    '                                    <li><a class="dropdown-item" href="farm_devices.php?farm_id=' + value.id + '">\n' +
+                                    '                                        <span data-feather="wifi" class="align-text-bottom"></span> Devices\n' +
+                                    '                                    </a></li>\n' +
+                                    '                                    <li><a class="dropdown-item text-warning" href="farm_edit.php?farm_id=' + value.id + '">\n' +
+                                    '                                        <span data-feather="edit-2" class="align-text-bottom"></span> Modify\n' +
+                                    '                                    </a></li>\n' +
+                                    '                                    <li><a onclick="deleteFarm(\'' + value.id + '\')" class="dropdown-item text-danger" href="#">\n' +
+                                    '                                        <span data-feather="trash-2" class="align-text-bottom"></span> Delete\n' +
+                                    '                                    </a></li>\n' +
+                                    '                                </ul>\n' +
+                                    '                            </div>\n' +
+                                    '                        </td>\n' +
+                                    '                    </tr>'
+                                rows += row
+                            }
+                        );
+
+                        $("#table_body").html(rows);
+                        $("table").DataTable({
+                            order: [0, 'desc']
+                        });
+                    } else {
+                        $("table").html('<div class="col-md-3"><p class="text-dark">No farms found for your account, please add first</p> </div>');
+                    }
                 }
 
             } else {
@@ -649,6 +664,108 @@ function deleteFarm(id) {
 
 function deleteDevice(id) {
     alert('will delete device: ' + id)
+}
+
+
+//get all unclaimed devices
+function get_unclaimed_devices() {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+        },
+        url: api + "api/devices/unclaimed",
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.error == false) {
+                unclaimed_devices = response.unclaimed_devices
+                if (unclaimed_devices.length > 0) {
+
+                    var rows = ''
+                    $.each(unclaimed_devices, function (key, value) {
+
+                            row = '<tr>\n' +
+                                '                        <td>' + value.flotta_egdedevice_id + '</td>\n' +
+                                '                        <td>' + value.mode + '</td>\n' +
+                                '                        <td>' + value.device_type + '</td>\n' +
+                                '<td>\n' +
+                                '   <button onclick="setUnclaimedDevice(\'' + value.flotta_egdedevice_id + '\', \'' + value.device_type + '\')" type="button" class="btn btn-sm btn-outline-secondary "\n' +
+                                '           data-bs-toggle="modal"\n' +
+                                '          data-bs-target="#staticBackdrop">\n' +
+                                '       <span data-feather="check" class="align-text-bottom"></span>\n' +
+                                '       Select\n' +
+                                '</button>\n' +
+                                '</td>\n' +
+                                '</tr>'
+                            rows += row
+                        }
+                    );
+
+                    $("#table_body").html(rows);
+                    $("table").DataTable({
+                        order: [0, 'desc']
+                    });
+                } else {
+                    $("table").html('<div class="col-md-3"><p class="text-dark">No unclaimed devices found</p> /div>');
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+    ;
+}
+
+//modding to go to add device
+function setUnclaimedDevice(dev_id,dev_type) {
+    $("#dev_id").val(dev_id)
+    $("#dev_type").val(dev_type)
 }
 
 //add farm
@@ -735,7 +852,87 @@ $("#addFarmForm").on('submit', function (e) {
     e.stopImmediatePropagation();
 });
 
+//add device
+$("#add_device_form").on('submit', function (e) {
+    var form_data = $(this).serialize();
+    $("#add_device_btn").html('<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span> Claiming device...');
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/add_device",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        $("#add_device_btn").text('Claim Device');
+        // $("#user_register_form")[0].reset();
+        if (response.error == false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
 
-$(document).ready(() => {
-    // Swal.showLoading()
-})
+            Toast.fire({
+                icon: 'success',
+                title: 'Saved successfully'
+            })
+            $("#add_device_form")[0].reset();
+            setTimeout(function () {
+                location.reload()
+            }, 1500);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        var msg = '';
+        $("#add_device_btn").text('Register');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+});
+

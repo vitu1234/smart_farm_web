@@ -1,3 +1,14 @@
+<?php
+include("includes.php");
+session_start();
+
+$api = $_ENV['API'];
+if (!isset($_SESSION['access'])) {
+    header('Location:login.php');
+}
+$access_token = $_SESSION['access'];
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,6 +20,7 @@
     <title>Smart Farm</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
 
 
     <!-- Favicons -->
@@ -87,11 +99,9 @@
             aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-           aria-label="Search">
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Sign out</a>
+            <a class="nav-link px-3" href="#">Logout</a>
         </div>
     </div>
 </header>
@@ -175,57 +185,117 @@
                 </div>
             </div>
 
-            <form class="" autocomplete="off">
+            <form class="" id="add_device_form" autocomplete="off">
+                <input type="hidden" value="<?=$_GET['device_id']?>" name="device_id">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mt-2">
-                            <div id="dropdowns" class="dropdown">
-                                <button style="width: 100%" class="btn btn-secondary btn-lg dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    Farm
-                                </button>
-                                <ul class="dropdown-menu" style="text-align: center; width: 100%">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
-                            </div>
+
+                            <select required id="dropdown_menu_farms" name="farm_id" class="form-select form-select-md mb-3" aria-label=".form-select-lg example">
+
+                            </select>
+                            <label class="text-dark" for="dropdown_menu_farms">Farm/Location</label>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input autocomplete="off" type="text" class="form-control " id="floatingInput2"
+                            <input autocomplete="off" type="text" class="form-control " name="device_name" id="floatingInput2"
                                    placeholder="Device Name">
                             <label class="text-dark" for="floatingInput2">Device Name</label>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <textarea autocomplete="off" type="text" class="form-control " id="textarea"
+                        <div class=" mb-3">
+                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_type" name="raw_readings_type"
+                                      placeholder="Ex: humidity, temperature, soil_moisture"></textarea>
+                            <label class="text-dark" for="readings_type">Measurements(s) Type <small class="text-danger-emphasis">(Sensor measurements type input one line separated by commas, *No spaces -only Underscore allowed)</small></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class=" mb-3">
+                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_units_type" name="raw_readings_units_type"
+                                      placeholder="Ex:  °C, %, CM"></textarea>
+                            <label class="text-dark" for="readings_type">Measurements(s) Units <small class="text-danger-emphasis">(Measurements units input one line separated by commas, *No spaces -only Underscore allowed)</small></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" mb-3">
+                            <textarea autocomplete="off" type="text" class="form-control " id="description" name="description"
                                       placeholder="Description"></textarea>
-                            <label class="text-dark" for="textarea">Description</label>
+                            <label class="text-dark" for="textarea">Device Description</label>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-dark">Save Device</button>
+                <button type="submit" id="add_device_btn" class="btn btn-outline-dark">Claim Device</button>
             </form>
         </main>
     </div>
 </div>
 
+<!-- Modal Add Farm-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form2 px-1">
+                    <div class="form-floating mb-3">
+                        <input autocomplete="off" type="text" class="form-control" id="floatingInput2"
+                               placeholder="Ex: John Farm1">
+                        <label class="text-dark" for="floatingInput2">Device Name</label>
+                    </div>
+                    <small>Click On the map where your farm is located</small>
+                    <div class="form-floating mb-3">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-dark">Save Farm</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <script src="js/bootstrap.bundle.min.js" type="application/javascript"></script>
 <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+<script src="js/datatables.min.js" type="text/javascript"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
         crossorigin="anonymous"></script>
 <script src="js/dashboard.js"></script>
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet-src.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder@latest/dist/Control.Geocoder.js"></script>
 
+<script src="js/map.js"></script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    var api = "<?php echo $api; ?>"
+    var token = "<?php echo $access_token; ?>"
+</script>
+<script src="js/js.js"></script>
+<script>
+    $(document).ready(() => {
+        get_all_user_farms("<?php echo $access_token; ?>")
+
+
+    })
+</script>
 </body>
 </html>
