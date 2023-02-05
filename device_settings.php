@@ -175,56 +175,86 @@ $access_token = $_SESSION['access'];
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Unclaimed Devices</h1>
+                <h1 class="h2">Device Settings</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <!--                    <a href="unclaimed_devices.php" type="button" class="btn btn-sm btn-outline-secondary">-->
+                    <!--                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"-->
+                    <!--                            data-bs-target="#staticBackdrop">-->
                     <!--                        <span data-feather="plus" class="align-text-bottom"></span>-->
-                    <!--                        Unclaimed Devices-->
-                    <!--                    </a>-->
+                    <!--                        Add Device-->
+                    <!--                    </button>-->
                 </div>
             </div>
 
-            <div class="table-responsive" id="devices">
-                <table class="table table-striped table-hover table-md">
-                    <thead>
-                    <tr>
-                        <th scope="col">Device ID</th>
-                        <th scope="col">Default Mode</th>
-                        <th scope="col">Device Type</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody id="table_body">
 
-                    </tbody>
-                </table>
-            </div>
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th>Device ID:</th>
+                    <td>e38f9c7a40f14ac893e610e5c679d3b6</td>
+
+                    <th>Device Name:</th>
+                    <td>First Device</td>
+                </tr>
+
+                <tr>
+                    <th>Device Mode:</th>
+                    <td>Auto</td>
+
+                    <th>Switch Status:</th>
+                    <td>On</td>
+                </tr>
+
+                <tr>
+                    <th>Farm Name:</th>
+                    <td>Farm 1 UI</td>
+
+                    <th>Location:</th>
+                    <td>Sadang 5(o)-dong, Dongjak-gu, Seoul, 07030, South Korea</td>
+                </tr>
+
+                </tbody>
+            </table>
+            <hr/>
+            <h4 class="h3">Schedule</h4>
+            <form class="mt-2" method="post" autocomplete="off">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-floating mt-2">
+                            <div id="dropdowns" class="dropdown">
+                                <button  class="btn btn-secondary btn-lg dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    Mode
+                                </button>
+                                <ul class="dropdown-menu" >
+                                    <li><a class="dropdown-item" href="#">Auto</a></li>
+                                    <li><a class="dropdown-item" href="#">Manual</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-floating mb-3">
+                            <input autocomplete="off" type="time" class="form-control " id="floatingInput2"
+                                   placeholder="Device Name">
+                            <label class="text-dark" for="floatingInput2">Choose time to always run the device</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <textarea autocomplete="off" type="text" class="form-control " id="textarea"
+                                      placeholder="Description"></textarea>
+                            <label class="text-dark" for="textarea">Description</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-dark">Save Device</button>
+            </form>
         </main>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Power Test</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Did the LEDs start blinking on the device?
-            </div>
-            <div class="modal-footer">
-                <form action="add_devices.php" method="get">
-                    <input type="hidden" name="device_id" id="dev_id">
-                    <input type="hidden" name="device_type" id="dev_type">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="submit"
-                       class="btn btn-outline-dark">Yes</button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -249,7 +279,7 @@ $access_token = $_SESSION['access'];
 <script src="js/js.js"></script>
 <script>
     $(document).ready(() => {
-        get_unclaimed_devices()
+
     })
 </script>
 </body>
