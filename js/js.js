@@ -889,7 +889,7 @@ $("#add_device_form").on('submit', function (e) {
             })
             $("#add_device_form")[0].reset();
             setTimeout(function () {
-                location.reload()
+                window.location.href = 'devices.php';
             }, 1500);
 
         } else {
