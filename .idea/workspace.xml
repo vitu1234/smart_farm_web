@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="worked on devices, farms">
-      <change afterPath="$PROJECT_DIR$/device_settings.php" afterDir="false" />
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="register user device">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/add_devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/add_devices.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unclaimed_devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/unclaimed_devices.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +160,21 @@
       <option name="project" value="LOCAL" />
       <updated>1675315000309</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="user can register">
+      <created>1675536310310</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1675536310311</updated>
+    </task>
+    <task id="LOCAL-00014" summary="register user device">
+      <created>1675616130378</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1675616130378</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,6 +202,8 @@
     <MESSAGE value="adding device action" />
     <MESSAGE value="added device actuation actions" />
     <MESSAGE value="worked on devices, farms" />
-    <option name="LAST_COMMIT_MESSAGE" value="worked on devices, farms" />
+    <MESSAGE value="user can register" />
+    <MESSAGE value="register user device" />
+    <option name="LAST_COMMIT_MESSAGE" value="register user device" />
   </component>
 </project>

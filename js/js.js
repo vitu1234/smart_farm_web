@@ -218,47 +218,58 @@ function get_all_user_devices_dashboard(token) {
         url: api + "api/user/devices",
         method: 'GET',
         success: function (response) {
+            console.log(response)
             Swal.close()
-            if (response.error == false) {
+            if (response.error === false) {
                 user_devices = response.user_devices
                 if (user_devices.length > 0) {
                     var cards = ''
                     $.each(user_devices, function (key, value) {
                             switch_on = ''
                             switch_off = ''
-                            if (value.switch_status == true) {
+                            if (value.switch_status === true) {
                                 switch_on = 'checked'
                                 switch_off = ''
                             } else {
                                 switch_off = 'checked'
                                 switch_on = ''
                             }
+                            var readings = ''
+                            $.each(value.units, function (key_unit, value_unit) {
+                                var reading = "<strong>" + key_unit.replace(/^./, key_unit[0].toUpperCase()) + ":</strong> " + value[key_unit] + value_unit + "<br/>"
+                                readings += reading
+                            })
+
+                            var action = ''
+                            if (value.device_type !== 'sensor') {
+                                action = '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
+
+
+                                    '                                    <input value="true" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio1' + value.device_id + '"\n' +
+                                    '                                           autocomplete="off" ' + switch_on + '>\n' +
+                                    '                                    <label class="btn btn-outline-secondary" for="btnradio1' + value.device_id + '">ON</label>\n' +
+                                    '\n' +
+
+
+                                    '                                    <input value="false" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio2' + value.device_id + '"\n' +
+                                    '                                           autocomplete="off" ' + switch_off + '>\n' +
+                                    '                                    <label class="btn btn-outline-danger" for="btnradio2' + value.device_id + '">OFF</label>\n' +
+                                    '\n' +
+
+                                    '                                </div>\n' +
+                                    '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off actuators\n' +
+                                    '                                        after using</small></i>\n'
+                            }
+
                             card = '<div class="col-md-3">\n' +
                                 '                        <div class="card" style="width: 100%;">\n' +
                                 '                            <div class="card-body">\n' +
                                 '                                <a href="device_settings.php?device_id=' + value.id + '" class="float-end"><strong>Setting</strong></a>\n' +
                                 '                                <h5 class="card-title"><strong>' + value.device_name + '</strong></h5>\n' +
                                 '                                <h6 class="card-subtitle mb-2 text-muted">' + value.farm_name + '</h6>\n' +
-                                '                                <p class="card-text">Temp: ' + value.temperature + '°C <strong>|</strong> Humidity: ' + value.humidity + '% <strong>|</strong> Soil\n' +
-                                '                                    Moisture: ' + value.soil_moisture + '%</p>\n' +
-                                '\n' + '<p class="mt-1"><small><em>Last record: ' + value.timestamp + '</em></small></p>' +
-                                '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
-
-
-                                '                                    <input value="true" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio1' + value.device_id + '"\n' +
-                                '                                           autocomplete="off" ' + switch_on + '>\n' +
-                                '                                    <label class="btn btn-outline-secondary" for="btnradio1' + value.device_id + '">ON</label>\n' +
-                                '\n' +
-
-
-                                '                                    <input value="false" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio2' + value.device_id + '"\n' +
-                                '                                           autocomplete="off" ' + switch_off + '>\n' +
-                                '                                    <label class="btn btn-outline-danger" for="btnradio2' + value.device_id + '">OFF</label>\n' +
-                                '\n' +
-
-                                '                                </div>\n' +
-                                '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump\n' +
-                                '                                        after using</small></i>\n' +
+                                '                                <p class="card-text">' + readings + '</p>\n' +
+                                '\n' + '<p class="mt-1"><small><em>Last activity: ' + value.timestamp + '</em></small></p>' +
+                                action +
                                 '                            </div>\n' +
                                 '                        </div>\n' +
                                 '                    </div>'
@@ -333,6 +344,7 @@ function get_all_user_devices(token) {
         url: api + "api/user/devices",
         method: 'GET',
         success: function (response) {
+
             Swal.close()
             if (response.error == false) {
                 user_devices = response.user_devices
@@ -714,7 +726,7 @@ function get_unclaimed_devices() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There\'s a problem loading data from the server!',
+                    text: response.msg
                 })
             }
 
@@ -763,7 +775,7 @@ function get_unclaimed_devices() {
 }
 
 //modding to go to add device
-function setUnclaimedDevice(dev_id,dev_type) {
+function setUnclaimedDevice(dev_id, dev_type) {
     $("#dev_id").val(dev_id)
     $("#dev_type").val(dev_type)
 }
@@ -889,7 +901,7 @@ $("#add_device_form").on('submit', function (e) {
             })
             $("#add_device_form")[0].reset();
             setTimeout(function () {
-                location.reload()
+                window.location.href = 'devices.php';
             }, 1500);
 
         } else {
