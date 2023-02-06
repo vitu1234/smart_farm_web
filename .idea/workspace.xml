@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="register user device">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add_devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/add_devices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
-    </list>
+    <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="user devices, unclaimed devices" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -174,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675616130378</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="user devices, unclaimed devices">
+      <created>1675674846207</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1675674846207</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -204,6 +207,8 @@
     <MESSAGE value="worked on devices, farms" />
     <MESSAGE value="user can register" />
     <MESSAGE value="register user device" />
-    <option name="LAST_COMMIT_MESSAGE" value="register user device" />
+    <MESSAGE value="added devices, view devices modified" />
+    <MESSAGE value="user devices, unclaimed devices" />
+    <option name="LAST_COMMIT_MESSAGE" value="user devices, unclaimed devices" />
   </component>
 </project>
