@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>A Dashboard for Everybody</title>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description"
+          content="Small, speculative demo project that shows how real-time dashboards, like those used for IoT systems, can be enhanced using accessible design and development practices.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+
+</head>
+<body class="bg-secondary-subtle">
+<main class="container mt-5 ">
+    <h1 class="mb-4"><u>A Dashboard for IoT!</u><span class="fab fa-accessible-icon" aria-hidden="true"></span>
+    </h1>
+    <div class="row mb-4">
+        <div class="col-md-3 rounded">
+            <div class="card shadow-lg" style="height: 100px">
+                <div class="card-body">
+                    <label for="selected-sensor" class="label">Select sensor to watch:</label>
+                    <div class="form-group ">
+                        <select class="form-select" id="selected-sensor">
+                            <option value="humidity">Humidity</option>
+                            <option value="temperature">Temperature</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 rounded">
+            <div class="card" style="height: 100px">
+
+                <div class="card-body shadow-lg">
+
+                    <div class="row " style="height: 100%">
+                        <div class="col ">
+                            <button style="height: 100%" class="btn btn-outline-secondary">Pause <span
+                                    class="fa fa-pause" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="col">
+                            <label for="selected-update" class="label">Update every:</label>
+                            <div class="form-group ">
+                                <select class="form-select" id="selected-update">
+                                    <option value="100ms">100ms</option>
+                                    <option value="500ms">500ms</option>
+                                    <option value="1s">1s</option>
+                                    <option value="3s">3s</option>
+                                    <option value="5s">5s</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3  rounded">
+            <div class="card" style="height: 100px">
+
+                <div class="card-body shadow-lg  bg-success">
+                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 18px">Input
+                        Devices Connected <span class="fa fa-bolt" aria-hidden="true"></span></h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 ">
+            <div class="card " style="height: 100px">
+
+                <div class="card-body shadow-lg bg-danger">
+                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 18px">Output
+                        Devices Connected <span class="fa fa-plug" aria-hidden="true"></span></h4>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-8  ">
+            <div class="card mt-4 bg-white shadow rounded">
+                <h4 class="text-center">Live Sensor Data</h4>
+                <div class="card-body">
+                    <canvas width="100"
+                            height="40" id="sensorChart1"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 ">
+            <div class="card mt-4 mb-2 bg-white shadow rounded">
+                <h4 class="text-center mt-1">Sensor Highlights</h4>
+                <div class="card-body">
+                    <div class="row ">
+                        <div class="col-md-6 my-1">
+                            <div class="bg-body-secondary d-flex justify-content-center align-items-center"
+                                 style="width: 100%; height: 150px; border-radius: 5px">
+                                <div class="text-center">
+                                    <p class="text-center mt-1">Most Recent</p>
+                                    <h4 class="text-center"><strong>25°C</strong></h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div class="bg-body-secondary d-flex justify-content-center align-items-center"
+                                 style="width: 100%; height: 150px; border-radius: 5px">
+                                <div class="text-center">
+                                    <p class="text-center mt-1">Records Total</p>
+                                    <h4 class="text-center"><strong>234</strong></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 " style="height: 100%">
+                        <div class="col-md-6 my-1">
+                            <div class="bg-body-secondary d-flex justify-content-center align-items-center"
+                                 style="width: 100%; height: 150px; border-radius: 5px">
+                                <div class="text-center">
+                                    <p class="text-center mt-1">Triggers Set</p>
+                                    <h4 class="text-center"><strong>0</strong></h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 my-1">
+                            <div class="bg-body-secondary d-flex justify-content-center align-items-center"
+                                 style="width: 100%; height: 150px; border-radius: 5px">
+                                <div class="text-center">
+                                    <p class="text-center mt-1">Average Reading</p>
+                                    <h4 class="text-center"><strong>27°C</strong></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-3">
+        <div class="col-md-3 bg-light">
+
+            <div class="container-fluid shadow p-3"
+                 style="width: 100%; border-radius: 5px">
+                <h4 class="text-dark-emphasis">Create a trigger</h4>
+
+                <form>
+                    <div class="bg-body-secondary p-2">
+                        <span class=" mt-1"><b>When data goes ...</b></span>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
+                            <label class="custom-control-label" for="customRadio1">Above</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
+                            <label class="custom-control-label" for="customRadio2">Below</label>
+                        </div>
+                        <span class=" mt-1"><b>This value:</b></span>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" class="form-control" id="validationDefault01" min="0" value="1"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="bg-body-secondary p-2 mt-2">
+                        <span class=" mt-1"><b>Make this actuator ...</b></span>
+                        <div class="form-group ">
+                            <select class="form-select" id="selected-actuators">
+                                <option disabled selected>---</option>
+                                <option value="100ms">Actuator 1</option>
+                                <option value="500ms">Actuator 2</option>
+                                <option value="1s">Actuator 3</option>
+                                <option value="3s">Actuator 4</option>
+                            </select>
+                        </div>
+
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio11" name="customRadio" class="custom-control-input">
+                            <label class="custom-control-label" for="customRadio11">On</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio22" name="customRadio" class="custom-control-input">
+                            <label class="custom-control-label" for="customRadio22">Off</label>
+                        </div>
+
+                        </br>
+                        <span class=" mt-1"><b>For these minutes ...</b> </span><br/><small class="text-danger">(Leave blank to keep action
+                        infinite)</small>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" class="form-control" id="validationDefault021" min="0" value="1"
+                                   required>
+                        </div>
+                    </div>
+                    <button style="width: 100%" class="btn btn-outline-primary mt-1">Save</button>
+                </form>
+
+            </div>
+        </div>
+
+
+        <div class="col-md-3 bg-light-subtle">
+
+            <div class="container-fluid shadow p-3"
+                 style="width: 100%; height: 540px; border-radius: 5px; border: 5px dashed #cbcbcb">
+            </div>
+        </div>
+
+        <div class="col-md-3 bg-light-subtle">
+
+            <div class="container-fluid shadow p-3"
+                 style="width: 100%; height: 540px; border-radius: 5px; border: 5px dashed #cbcbcb">
+            </div>
+        </div>
+        <div class="col-md-3 bg-light-subtle">
+
+            <div class="container-fluid shadow p-3"
+                 style="width: 100%; height: 540px; border-radius: 5px; border: 5px dashed #cbcbcb">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and custom script -->
+    <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Simulated sensor data
+        const sensorData1 = [10, 15, 25, 30, 20, 35];
+        const sensorData2 = [5, 12, 18, 24, 28, 15];
+
+        // Create charts
+        const ctx1 = document.getElementById('sensorChart1').getContext('2d');
+        const sensorChart1 = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Sensor Data for Device 1',
+                    data: sensorData1,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+            }
+        });
+
+        const ctx2 = document.getElementById('sensorChart2').getContext('2d');
+        const sensorChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Sensor Data for Device 2',
+                    data: sensorData2,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Simulated device interactions
+        document.getElementById("device1-on").addEventListener("click", function () {
+            // Simulate turning on Device 1
+            alert("Turning on Device 1");
+        });
+
+        document.getElementById("device1-off").addEventListener("click", function () {
+            // Simulate turning off Device 1
+            alert("Turning off Device 1");
+        });
+
+        document.getElementById("device2-on").addEventListener("click", function () {
+            // Simulate turning on Device 2
+            alert("Turning on Device 2");
+        });
+
+        document.getElementById("device2-off").addEventListener("click", function () {
+            // Simulate turning off Device 2
+            alert("Turning off Device 2");
+        });
+    </script>
+</main>
+</body>
+</html>

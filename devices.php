@@ -1,12 +1,12 @@
 <?php
 include("includes.php");
-session_start();
-
-$api = $_ENV['API'];
-if (!isset($_SESSION['access'])) {
-    header('Location:login.php');
-}
-$access_token = $_SESSION['access'];
+//session_start();
+//
+//$api = $_ENV['API'];
+//if (!isset($_SESSION['access'])) {
+//    header('Location:login.php');
+//}
+//$access_token = $_SESSION['access'];
 
 ?>
 <!doctype html>
