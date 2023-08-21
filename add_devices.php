@@ -207,22 +207,22 @@ $access_token = $_SESSION['access'];
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class=" mb-3">
-                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_type" name="raw_readings_type"
-                                      placeholder="Ex: humidity, temperature, soil_moisture"></textarea>
-                            <label class="text-dark" for="readings_type">Measurements(s) Type <small class="text-danger-emphasis">(Sensor measurements type input one line separated by commas, *No spaces -only Underscore allowed)</small></label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class=" mb-3">
-                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_units_type" name="raw_readings_units_type"
-                                      placeholder="Ex:  °C, %, CM"></textarea>
-                            <label class="text-dark" for="readings_type">Measurements(s) Units <small class="text-danger-emphasis">(Measurements units input one line separated by commas, *No spaces -only Underscore allowed)</small></label>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div class=" mb-3">-->
+<!--                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_type" name="raw_readings_type"-->
+<!--                                      placeholder="Ex: humidity, temperature, soil_moisture"></textarea>-->
+<!--                            <label class="text-dark" for="readings_type">Measurements(s) Type <small class="text-danger-emphasis">(Sensor measurements type input one line separated by commas, *No spaces -only Underscore allowed)</small></label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div class=" mb-3">-->
+<!--                            <textarea autocomplete="off" type="text" class="form-control " id="raw_readings_units_type" name="raw_readings_units_type"-->
+<!--                                      placeholder="Ex:  °C, %, CM"></textarea>-->
+<!--                            <label class="text-dark" for="readings_type">Measurements(s) Units <small class="text-danger-emphasis">(Measurements units input one line separated by commas, *No spaces -only Underscore allowed)</small></label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="row">
                     <div class="col-md-12">
                         <div class=" mb-3">

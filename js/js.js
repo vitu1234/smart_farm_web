@@ -218,47 +218,60 @@ function get_all_user_devices_dashboard(token) {
         url: api + "api/user/devices",
         method: 'GET',
         success: function (response) {
+            console.log(response)
             Swal.close()
-            if (response.error == false) {
+            if (response.error === false) {
                 user_devices = response.user_devices
                 if (user_devices.length > 0) {
                     var cards = ''
                     $.each(user_devices, function (key, value) {
                             switch_on = ''
                             switch_off = ''
-                            if (value.switch_status == true) {
+                            if (value.switch_status === true) {
                                 switch_on = 'checked'
                                 switch_off = ''
                             } else {
                                 switch_off = 'checked'
                                 switch_on = ''
                             }
+                            var readings = ''
+                            $.each(value.units, function (key_unit, value_unit) {
+                                var reading = "<strong>" + key_unit.replace(/^./, key_unit[0].toUpperCase()) + ":</strong> " + value[key_unit] + value_unit + "<br/>"
+                                readings += reading
+                            })
+
+                            var settings = ''
+                            var action = ''
+                            if (value.device_type !== 'sensor') {
+                                action = '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
+
+
+                                    '                                    <input value="true" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio1' + value.device_id + '"\n' +
+                                    '                                           autocomplete="off" ' + switch_on + '>\n' +
+                                    '                                    <label class="btn btn-outline-secondary" for="btnradio1' + value.device_id + '">ON</label>\n' +
+                                    '\n' +
+
+
+                                    '                                    <input value="false" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio2' + value.device_id + '"\n' +
+                                    '                                           autocomplete="off" ' + switch_off + '>\n' +
+                                    '                                    <label class="btn btn-outline-danger" for="btnradio2' + value.device_id + '">OFF</label>\n' +
+                                    '\n' +
+
+                                    '                                </div>\n' +
+                                    '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off actuators\n' +
+                                    '                                        after using</small></i>\n'
+                                settings = '<a href="device_settings.php?device_id=' + value.device_id + '" class="float-end"><strong>Setting</strong></a>\n'
+                            }
+
                             card = '<div class="col-md-3">\n' +
                                 '                        <div class="card" style="width: 100%;">\n' +
                                 '                            <div class="card-body">\n' +
-                                '                                <a href="device_settings.php?device_id=' + value.id + '" class="float-end"><strong>Setting</strong></a>\n' +
+                                settings +
                                 '                                <h5 class="card-title"><strong>' + value.device_name + '</strong></h5>\n' +
                                 '                                <h6 class="card-subtitle mb-2 text-muted">' + value.farm_name + '</h6>\n' +
-                                '                                <p class="card-text">Temp: ' + value.temperature + '°C <strong>|</strong> Humidity: ' + value.humidity + '% <strong>|</strong> Soil\n' +
-                                '                                    Moisture: ' + value.soil_moisture + '%</p>\n' +
-                                '\n' + '<p class="mt-1"><small><em>Last record: ' + value.timestamp + '</em></small></p>' +
-                                '                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">\n' +
-
-
-                                '                                    <input value="true" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio1' + value.device_id + '"\n' +
-                                '                                           autocomplete="off" ' + switch_on + '>\n' +
-                                '                                    <label class="btn btn-outline-secondary" for="btnradio1' + value.device_id + '">ON</label>\n' +
-                                '\n' +
-
-
-                                '                                    <input value="false" onclick="set_device_action(\'' + value.device_id + '\')" type="radio" class="btn-check" name="btnradio' + value.device_id + '" id="btnradio2' + value.device_id + '"\n' +
-                                '                                           autocomplete="off" ' + switch_off + '>\n' +
-                                '                                    <label class="btn btn-outline-danger" for="btnradio2' + value.device_id + '">OFF</label>\n' +
-                                '\n' +
-
-                                '                                </div>\n' +
-                                '                                <br/><i><small class="text-secondary"><strong>NB:</strong> remember to turn off pump\n' +
-                                '                                        after using</small></i>\n' +
+                                '                                <p class="card-text">' + readings + '</p>\n' +
+                                '\n' + '<p class="mt-1"><small><em>Last activity: ' + value.timestamp + '</em></small></p>' +
+                                action +
                                 '                            </div>\n' +
                                 '                        </div>\n' +
                                 '                    </div>'
@@ -333,6 +346,7 @@ function get_all_user_devices(token) {
         url: api + "api/user/devices",
         method: 'GET',
         success: function (response) {
+
             Swal.close()
             if (response.error == false) {
                 user_devices = response.user_devices
@@ -714,7 +728,7 @@ function get_unclaimed_devices() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There\'s a problem loading data from the server!',
+                    text: response.msg
                 })
             }
 
@@ -763,7 +777,7 @@ function get_unclaimed_devices() {
 }
 
 //modding to go to add device
-function setUnclaimedDevice(dev_id,dev_type) {
+function setUnclaimedDevice(dev_id, dev_type) {
     $("#dev_id").val(dev_id)
     $("#dev_type").val(dev_type)
 }
@@ -936,3 +950,256 @@ $("#add_device_form").on('submit', function (e) {
     e.stopImmediatePropagation();
 });
 
+//get device settings
+function get_device_details_settings(device_id, token) {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/devices/settings/" + device_id,
+        method: 'GET',
+        success: function (response) {
+            console.log(response)
+            Swal.close()
+            if (response.error === false) {
+                var user_device_details = response.device_details
+                var device_settings = response.device_settings
+                var farm_details = response.farm_details
+                var farm_devices = response.farm_devices
+                var switch_status = user_device_details.switch_status === false ? "Off" : "On"
+
+                var device_details = '<tbody>\n' +
+                    '                <tr>\n' +
+                    '                    <th>Device ID:</th>\n' +
+                    '                    <td>' + user_device_details.device_id + '</td>\n' +
+                    '\n' +
+                    '                    <th>Device Name:</th>\n' +
+                    '                    <td>' + user_device_details.device_name + '</td>\n' +
+                    '                </tr>\n' +
+                    '\n' +
+                    '                <tr>\n' +
+                    '                    <th>Device Mode:</th>\n' +
+                    '                    <td>' + user_device_details.mode + '</td>\n' +
+                    '\n' +
+                    '                    <th>Switch Status:</th>\n' +
+                    '                    <td>' + switch_status + '</td>\n' +
+                    '                </tr>\n' +
+                    '\n' +
+                    '                <tr>\n' +
+                    '                    <th>Farm Name:</th>\n' +
+                    '                    <td>' + farm_details.farm_name + '</td>\n' +
+                    '\n' +
+                    '                    <th>Location:</th>\n' +
+                    '                    <td>' + farm_details.address + '</td>\n' +
+                    '                </tr>\n' +
+                    '\n' +
+                    '                </tbody>'
+
+                if (user_device_details.mode === "Auto") {
+                    $("#sensor_settings").show()
+                    $("#device_mode_container").html('' +
+                        '<select onchange="changeViewDeviceMode()" id="device_mode" name="device_mode" class="form-select">\n' +
+                        '<option value="Auto" selected>Auto</option>\n' +
+                        '<option value="Manual">Manual</option>\n' +
+                        '</select>'
+                    )
+                } else {
+                    $("#sensor_settings").hide()
+                    $("#device_mode_container").html('' +
+                        '<select  onchange="changeViewDeviceMode()" id="device_mode" name="device_mode" class="form-select">\n' +
+                        '<option value="Auto" >Auto</option>\n' +
+                        '<option value="Manual" selected>Manual</option>\n' +
+                        '</select>'
+                    )
+                }
+                var columns = ''
+                if (farm_devices.length > 0) {
+                    if (device_settings.length === 0) {
+                        $.each(farm_devices, function (key, value) {
+                                var all_columns = value.columns
+                                var all_units = value.units
+                                for (let i = 0; i < all_columns.length; i++) {
+                                    columns += '                        <div class="row mt-3">\n' +
+                                        '                                <h5><strong>' + all_columns[i] + '</strong></h5>\n' +
+                                        '\n' +
+                                        '                                <div class="col">\n' +
+                                        '                                    <label for="threshold" class="form-label">Threshold</label>\n' +
+                                        '                                    <input required id="threshold" name="' + all_units[i] + '_threshold" type="number" class="form-control"\n' +
+                                        '                                           placeholder="Threshold to activate actuators"\n' +
+                                        '                                           aria-label="Threshold">\n' +
+                                        '                                </div>\n' +
+                                        '                                <div class="col">\n' +
+                                        '                                    <label for="condition" class="form-label">Condition</label>\n' +
+                                        '                                    <input required id="condition" name="' + all_units[i] + '_condition" type="text" class="form-control"\n' +
+                                        '                                           placeholder="Condition to activate actuators: <,=,>"\n' +
+                                        '                                           aria-label="Condition">\n' +
+                                        '                                </div>\n' +
+                                        '\n' +
+                                        '                                <div class="col">\n' +
+                                        '                                    <label for="duration" class="form-label">Duration(Mins)</label>\n' +
+                                        '                                    <input required id="duration" name="' + all_units[i] + '_duration" type="number" min="0" class="form-control"\n' +
+                                        '                                           placeholder="Duration before turning off actuators"\n' +
+                                        '                                           aria-label="Duration">\n' +
+                                        '                                </div>\n' +
+                                        '                            </div>'
+                                }
+                            }
+                        );
+
+
+                    } else {
+
+                    }
+                }
+                $("#device_details").html(device_details)
+                $("#sensor_settings").html(columns)
+
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+    ;
+}
+
+
+//device mode view
+function changeViewDeviceMode() {
+    // alert("d")
+    // console.log()
+    if ($('#device_mode').find(":selected").val() === "Manual") {
+        $("#sensor_settings").hide()
+    } else {
+        $("#sensor_settings").show()
+    }
+}
+
+//save device settings
+$("#device_settings_form").on('submit', function (e) {
+    var form_data = $(this).serialize();
+    $("#settings_btn").html('<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span> Saving...');
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+            "Authorization": "JWT " + token
+        },
+        url: api + "api/user/devices/settings",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        console.log(response)
+        $("#settings_btn").text('Save Settings');
+        if (response.error == false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Saved successfully'
+            })
+            setTimeout(function () {
+                location.reload()
+            }, 1500);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        var msg = '';
+        $("#settings_btn").text('Save Settings');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+});

@@ -7,7 +7,11 @@ if (!isset($_SESSION['access'])) {
     header('Location:login.php');
 }
 $access_token = $_SESSION['access'];
-
+$device_id = $_GET['device_id'];
+//echo "<pre>";
+//print_r($_POST);
+//echo "</pre>";
+//die();
 ?>
 <!doctype html>
 <html lang="en">
@@ -175,7 +179,7 @@ $access_token = $_SESSION['access'];
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Device Settings</h1>
+                <h1 class="h2">Device Info</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <!--                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"-->
                     <!--                            data-bs-target="#staticBackdrop">-->
@@ -186,73 +190,60 @@ $access_token = $_SESSION['access'];
             </div>
 
 
-            <table class="table table-borderless">
-                <tbody>
-                <tr>
-                    <th>Device ID:</th>
-                    <td>e38f9c7a40f14ac893e610e5c679d3b6</td>
+            <table class="table table-borderless" id="device_details">
 
-                    <th>Device Name:</th>
-                    <td>First Device</td>
-                </tr>
-
-                <tr>
-                    <th>Device Mode:</th>
-                    <td>Auto</td>
-
-                    <th>Switch Status:</th>
-                    <td>On</td>
-                </tr>
-
-                <tr>
-                    <th>Farm Name:</th>
-                    <td>Farm 1 UI</td>
-
-                    <th>Location:</th>
-                    <td>Sadang 5(o)-dong, Dongjak-gu, Seoul, 07030, South Korea</td>
-                </tr>
-
-                </tbody>
             </table>
             <hr/>
-            <h4 class="h3">Schedule</h4>
-            <form class="mt-2" method="post" autocomplete="off">
+            <h4 class="h3">Settings (<small class="text-danger-emphasis"> Default</small>)</h4>
+            <form id="device_settings_form" class="mt-2" method="post" autocomplete="off">
+                <input id="device_id" name="device_id" value="<?=$device_id?>">
+
                 <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-floating mt-2">
-                            <div id="dropdowns" class="dropdown">
-                                <button  class="btn btn-secondary btn-lg dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    Mode
-                                </button>
-                                <ul class="dropdown-menu" >
-                                    <li><a class="dropdown-item" href="#">Auto</a></li>
-                                    <li><a class="dropdown-item" href="#">Manual</a></li>
-                                </ul>
-                            </div>
+
+                    <div class="col-md-4">
+                        <label for="device_mode" class="form-label">Device Mode</label>
+                        <div id="device_mode_container">
+
                         </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <div class="form-floating mb-3">
-                            <input autocomplete="off" type="time" class="form-control " id="floatingInput2"
-                                   placeholder="Device Name">
-                            <label class="text-dark" for="floatingInput2">Choose time to always run the device</label>
+
+                    <div class="col-md-12 mt-3">
+                        <div id="sensor_settings">
+
+
+<!--                            <div class="row mt-3">-->
+<!--                                <h5><strong>Humidity</strong></h5>-->
+<!---->
+<!--                                <div class="col">-->
+<!--                                    <label for="threshold" class="form-label">Threshold</label>-->
+<!--                                    <input id="threshold" name="threshold[]" type="number" class="form-control"-->
+<!--                                           placeholder="Threshold to activate actuators"-->
+<!--                                           aria-label="Threshold">-->
+<!--                                </div>-->
+<!--                                <div class="col">-->
+<!--                                    <label for="condition" class="form-label">Condition</label>-->
+<!--                                    <input id="condition" name="condition[]" type="text" class="form-control"-->
+<!--                                           placeholder="Condition to activate actuators: <,=,>"-->
+<!--                                           aria-label="Condition">-->
+<!--                                </div>-->
+<!---->
+<!--                                <div class="col">-->
+<!--                                    <label for="duration" class="form-label">Duration(Mins)</label>-->
+<!--                                    <input id="duration" name="duration[]" type="text" class="form-control"-->
+<!--                                           placeholder="Duration before turning off actuators"-->
+<!--                                           aria-label="Duration">-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+
                         </div>
                     </div>
+
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <textarea autocomplete="off" type="text" class="form-control " id="textarea"
-                                      placeholder="Description"></textarea>
-                            <label class="text-dark" for="textarea">Description</label>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-dark">Save Device</button>
+                <br/>
+                <button type="button" id="reset_btn" class="btn btn-outline-danger">Reset Settings</button>
+                <button type="submit" id="settings_btn" class="btn btn-outline-dark">Save Settings</button>
             </form>
         </main>
     </div>
@@ -275,11 +266,18 @@ $access_token = $_SESSION['access'];
 <script>
     var api = "<?php echo $api; ?>"
     var token = "<?php echo $access_token; ?>"
+    var device_id = "<?php echo $device_id; ?>"
 </script>
 <script src="js/js.js"></script>
 <script>
     $(document).ready(() => {
+        get_device_details_settings(device_id, token)
 
+    })
+
+    $("#device_mode").on("change", function (e) {
+        alert("d")
+        console.log($('#device_mode').find(":selected").val())
     })
 </script>
 </body>
