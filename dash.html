@@ -13,8 +13,19 @@
 </head>
 <body class="bg-secondary-subtle">
 <main class="container mt-5 ">
-    <h1 class="mb-4"><u>A Dashboard for IoT!</u><span class="fab fa-accessible-icon" aria-hidden="true"></span>
-    </h1>
+    <div class="row mb-4">
+        <div class="col-md-6">
+
+            <h1><i class="fas fa-microchip"></i> <u>A Dashboard for IoT</u> <i class="fas fa-microchip"></i>
+            </h1>
+        </div>
+        <div class="col-md-6">
+
+            <a class="float-end btn btn-outline-danger mx-2">Logout <i class="fas fa-sign-out-alt"></i></a>
+            <a class="float-end btn btn-outline-secondary">Settings <i class="fas fa-tools"></i></a>
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col-md-3 rounded">
             <div class="card shadow-lg" style="height: 100px">
@@ -191,7 +202,8 @@
                         </div>
 
                         </br>
-                        <span class=" mt-1"><b>For these minutes ...</b> </span><br/><small class="text-danger">(Leave blank to keep action
+                        <span class=" mt-1"><b>For these minutes ...</b> </span><br/><small class="text-danger">(Leave
+                        blank to keep action
                         infinite)</small>
                         <div class="col-md-6 mb-3">
                             <input type="number" class="form-control" id="validationDefault021" min="0" value="1"

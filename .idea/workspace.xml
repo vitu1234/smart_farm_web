@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57bc7370-89fb-4178-9dab-86aeed5f668e" name="Changes" comment="Merge remote-tracking branch 'origin/branch2' into branch2&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
-      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dash.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device_settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/device_settings.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/devices.php" beforeDir="false" afterPath="$PROJECT_DIR$/devices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/js.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/js.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dash.html" beforeDir="false" afterPath="$PROJECT_DIR$/dash.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +87,7 @@
       <option name="presentableId" value="Default" />
       <updated>1674892931095</updated>
       <workItem from="1674892937890" duration="26043000" />
-      <workItem from="1692446171949" duration="15694000" />
+      <workItem from="1692446171949" duration="18235000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1674929618828</created>
@@ -213,7 +208,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675675142666</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Merge remote-tracking branch 'origin/branch2' into branch2&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
+      <created>1692468549224</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1692468549224</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
