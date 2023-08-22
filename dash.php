@@ -23,19 +23,18 @@
 
             <a class="float-end btn btn-outline-danger mx-2">Logout <i class="fas fa-sign-out-alt"></i></a>
             <a class="float-end btn btn-outline-secondary">Settings <i class="fas fa-tools"></i></a>
+            <a class="float-end btn btn-outline-primary mx-2">Actuators <i class="fas fa-plug"></i></a>
         </div>
     </div>
-
+ 
     <div class="row mb-4">
         <div class="col-md-3 rounded">
             <div class="card shadow-lg" style="height: 100px">
                 <div class="card-body">
                     <label for="selected-sensor" class="label">Select sensor to watch:</label>
                     <div class="form-group ">
-                        <select class="form-select" id="selected-sensor">
-                            <option value="humidity">Humidity</option>
-                            <option value="temperature">Temperature</option>
-                            <option value="light">Light</option>
+                        <select class="form-select" onchange="populateDataOnSelectedSensor()" id="sensors_dropdown">
+
                         </select>
                     </div>
                 </div>
@@ -71,22 +70,21 @@
 
 
         <div class="col-md-3  rounded">
-            <div class="card" style="height: 100px">
-
-                <div class="card-body shadow-lg  bg-success">
-                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 18px">Input
-                        Devices Connected <span class="fa fa-bolt" aria-hidden="true"></span></h4>
-                </div>
+            <div class="card" style="height: 100px" id="countConnectedSensors">
+<!-- 
+                <div class="card-body shadow-lg  bg-success" >
+                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>1000</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4>
+                </div> -->
             </div>
         </div>
 
         <div class="col-md-3 ">
-            <div class="card " style="height: 100px">
+            <div class="card " style="height: 100px" id="countConnectedActuators">
 
-                <div class="card-body shadow-lg bg-danger">
-                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 18px">Output
-                        Devices Connected <span class="fa fa-plug" aria-hidden="true"></span></h4>
-                </div>
+                <!-- <div class="card-body shadow-lg bg-danger" >
+                    <h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>1000</b></small> Actuator(s)
+                         Connected <span class="fa fa-plug" aria-hidden="true"></span></h4>
+                </div> -->
             </div>
         </div>
 
@@ -115,7 +113,7 @@
                                  style="width: 100%; height: 150px; border-radius: 5px">
                                 <div class="text-center">
                                     <p class="text-center mt-1">Most Recent</p>
-                                    <h4 class="text-center"><strong>25°C</strong></h4>
+                                    <h4 id="most_recent_highlight" class="text-center"><strong>--</strong></h4>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +122,7 @@
                                  style="width: 100%; height: 150px; border-radius: 5px">
                                 <div class="text-center">
                                     <p class="text-center mt-1">Records Total</p>
-                                    <h4 class="text-center"><strong>234</strong></h4>
+                                    <h4 class="text-center" id="total_records_highlight"><strong>--</strong></h4>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +133,7 @@
                                  style="width: 100%; height: 150px; border-radius: 5px">
                                 <div class="text-center">
                                     <p class="text-center mt-1">Triggers Set</p>
-                                    <h4 class="text-center"><strong>0</strong></h4>
+                                    <h4 class="text-center"><strong>--</strong></h4>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +142,7 @@
                                  style="width: 100%; height: 150px; border-radius: 5px">
                                 <div class="text-center">
                                     <p class="text-center mt-1">Average Reading</p>
-                                    <h4 class="text-center"><strong>27°C</strong></h4>
+                                    <h4 class="text-center" id="average_reading_highlight"><strong>--</strong></h4>
                                 </div>
                             </div>
                         </div>
@@ -183,12 +181,8 @@
                     <div class="bg-body-secondary p-2 mt-2">
                         <span class=" mt-1"><b>Make this actuator ...</b></span>
                         <div class="form-group ">
-                            <select class="form-select" id="selected-actuators">
-                                <option disabled selected>---</option>
-                                <option value="100ms">Actuator 1</option>
-                                <option value="500ms">Actuator 2</option>
-                                <option value="1s">Actuator 3</option>
-                                <option value="3s">Actuator 4</option>
+                            <select class="form-select" id="actuators_dropdown">
+                        
                             </select>
                         </div>
 
@@ -242,6 +236,7 @@
     <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/jquery-3.6.3.min.js"></script>
     <!-- Chart.js -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Simulated sensor data
@@ -272,52 +267,37 @@
             }
         });
 
-        const ctx2 = document.getElementById('sensorChart2').getContext('2d');
-        const sensorChart2 = new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Sensor Data for Device 2',
-                    data: sensorData2,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderWidth: 1,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+        
 
-        // Simulated device interactions
-        document.getElementById("device1-on").addEventListener("click", function () {
-            // Simulate turning on Device 1
-            alert("Turning on Device 1");
-        });
+        // // Simulated device interactions
+        // document.getElementById("device1-on").addEventListener("click", function () {
+        //     // Simulate turning on Device 1
+        //     alert("Turning on Device 1");
+        // });
 
-        document.getElementById("device1-off").addEventListener("click", function () {
-            // Simulate turning off Device 1
-            alert("Turning off Device 1");
-        });
+        // document.getElementById("device1-off").addEventListener("click", function () {
+        //     // Simulate turning off Device 1
+        //     alert("Turning off Device 1");
+        // });
 
-        document.getElementById("device2-on").addEventListener("click", function () {
-            // Simulate turning on Device 2
-            alert("Turning on Device 2");
-        });
+        // document.getElementById("device2-on").addEventListener("click", function () {
+        //     // Simulate turning on Device 2
+        //     alert("Turning on Device 2");
+        // });
 
-        document.getElementById("device2-off").addEventListener("click", function () {
-            // Simulate turning off Device 2
-            alert("Turning off Device 2");
-        });
+        // document.getElementById("device2-off").addEventListener("click", function () {
+        //     // Simulate turning off Device 2
+        //     alert("Turning off Device 2");
+        // });
     </script>
+<script src="js/sweetalert2.js"></script>
+<script>
+    $(document).ready(() => {
+        // get_all_user_devices_dashboard("<?php echo $access_token; ?>")
+        populateDashboardSensors()
+    })
+</script>
+<script src="js/js.js"></script>
 </main>
 </body>
 </html>

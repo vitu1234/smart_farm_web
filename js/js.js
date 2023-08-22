@@ -207,6 +207,175 @@ $("#login_form").on('submit', function (e) {
     e.stopImmediatePropagation();
 })
 
+
+function populateDashboardSensors(){
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            // "Authorization": "JWT " + token
+        },
+        url: "backend/api/index.php?dashboard_setup=true",
+        method: 'GET',
+        success: function (response) {
+            console.log(response)
+            Swal.close()
+            if (response.isError === false) {
+                data = response.data
+                if (data.readDevices.length > 0) {
+                    var sensors_dropdown = '<option disabled selected>---</option>'
+                    $.each(data.readDevices, function (key, value) {
+                        sensors_dropdown+='<option value="'+value.property_identifier+'<>'+value.wireless_device_identifier+'">'+value.property_name+' - '+value.wireless_device_name+' - '+value.wireless_device_connection.toUpperCase()+'</option>'
+                    });
+
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readDevices.length+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    $("#sensors_dropdown").html(sensors_dropdown)
+                } else {
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readDevices.length+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    $("#sensors_dropdown").html(sensors_dropdown)
+                }
+
+                if (data.readwriteDevices.length > 0) {
+                    var actuators_dropdown = '<option disabled selected>---</option>'
+                    $.each(data.readwriteDevices, function (key, value) {
+                        actuators_dropdown+='<option value="'+value.property_identifier+'<>'+value.wireless_device_identifier+'">'+value.property_name+' - '+value.wireless_device_name+' - '+value.wireless_device_connection.toUpperCase()+'</option>'
+                    });
+
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readwriteDevices.length+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#actuators_dropdown").html(actuators_dropdown)
+                } else {
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readwriteDevices.length+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#actuators_dropdown").html(actuators_dropdown)
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+function populateDataOnSelectedSensor(){
+    // alert($("#sensors_dropdown").val())
+    var selectedValue = $("#sensors_dropdown").val()
+    const [property_identifier, wireless_device_identifier] = selectedValue.split("<>");
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            // "Authorization": "JWT " + token
+        },
+        url: "backend/api/index.php?property_identifier="+property_identifier+"&&wireless_device_identifier="+wireless_device_identifier,
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.isError === false) {
+                data = response.data
+                if (data.graph_records.length > 0) {
+                  
+                    $("#most_recent_highlight").html("<strong>"+Math.round(data.most_recent_highlight.property_reading).toFixed(0)+""+data.most_recent_highlight.property_unit+"</strong>")
+                    $("#total_records_highlight").html("<strong>"+data.total_records_highlight+"</strong>")
+                    $("#average_reading_highlight").html("<strong>"+data.average_highlight.average+data.average_highlight.property_unit+"</strong>")
+
+                } else {
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readDevices.length+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    $("#sensors_dropdown").html(sensors_dropdown)
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+
 //user devices on dashboard
 function get_all_user_devices_dashboard(token) {
     Swal.showLoading()
@@ -669,16 +838,6 @@ function get_all_user_farms(token) {
     ;
 }
 
-//delete farm
-function deleteFarm(id) {
-    alert('will delete farm: ' + id)
-}
-
-//delete device
-
-function deleteDevice(id) {
-    alert('will delete device: ' + id)
-}
 
 
 //get all unclaimed devices
@@ -866,340 +1025,4 @@ $("#addFarmForm").on('submit', function (e) {
     e.stopImmediatePropagation();
 });
 
-//add device
-$("#add_device_form").on('submit', function (e) {
-    var form_data = $(this).serialize();
-    $("#add_device_btn").html('<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span> Claiming device...');
-    $.ajax({ //make ajax request to cart_process.php
-        headers: {
-            "accept": "application/json",
-            "Authorization": "JWT " + token
-        },
-        url: api + "api/user/add_device",
-        type: "POST",
-        // crossDomain: true,
-        // xhrFields: { withCredentials: true },
-        dataType: "json", //expect json value from server
-        data: form_data
-    }).done(function (response) { //on Ajax success
-        $("#add_device_btn").text('Claim Device');
-        // $("#user_register_form")[0].reset();
-        if (response.error == false) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
 
-            Toast.fire({
-                icon: 'success',
-                title: 'Saved successfully'
-            })
-            $("#add_device_form")[0].reset();
-            setTimeout(function () {
-                window.location.href = 'devices.php';
-            }, 1500);
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
-        }
-
-    }).fail(function (jqXHR, exception) {
-        var msg = '';
-        $("#add_device_btn").text('Register');
-        if (jqXHR.status === 0) {
-            msg = 'Network or API error.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Bad request [404]';
-        } else if (jqXHR.status == 401) {
-            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
-            setTimeout(function () {
-                window.location.href = 'login.php';
-            }, 1500);
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
-        } else {
-            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: msg,
-        })
-    });
-
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-});
-
-//get device settings
-function get_device_details_settings(device_id, token) {
-    Swal.showLoading()
-    $.ajax({
-        headers: {
-            "accept": "application/json",
-            "Authorization": "JWT " + token
-        },
-        url: api + "api/user/devices/settings/" + device_id,
-        method: 'GET',
-        success: function (response) {
-            console.log(response)
-            Swal.close()
-            if (response.error === false) {
-                var user_device_details = response.device_details
-                var device_settings = response.device_settings
-                var farm_details = response.farm_details
-                var farm_devices = response.farm_devices
-                var switch_status = user_device_details.switch_status === false ? "Off" : "On"
-
-                var device_details = '<tbody>\n' +
-                    '                <tr>\n' +
-                    '                    <th>Device ID:</th>\n' +
-                    '                    <td>' + user_device_details.device_id + '</td>\n' +
-                    '\n' +
-                    '                    <th>Device Name:</th>\n' +
-                    '                    <td>' + user_device_details.device_name + '</td>\n' +
-                    '                </tr>\n' +
-                    '\n' +
-                    '                <tr>\n' +
-                    '                    <th>Device Mode:</th>\n' +
-                    '                    <td>' + user_device_details.mode + '</td>\n' +
-                    '\n' +
-                    '                    <th>Switch Status:</th>\n' +
-                    '                    <td>' + switch_status + '</td>\n' +
-                    '                </tr>\n' +
-                    '\n' +
-                    '                <tr>\n' +
-                    '                    <th>Farm Name:</th>\n' +
-                    '                    <td>' + farm_details.farm_name + '</td>\n' +
-                    '\n' +
-                    '                    <th>Location:</th>\n' +
-                    '                    <td>' + farm_details.address + '</td>\n' +
-                    '                </tr>\n' +
-                    '\n' +
-                    '                </tbody>'
-
-                if (user_device_details.mode === "Auto") {
-                    $("#sensor_settings").show()
-                    $("#device_mode_container").html('' +
-                        '<select onchange="changeViewDeviceMode()" id="device_mode" name="device_mode" class="form-select">\n' +
-                        '<option value="Auto" selected>Auto</option>\n' +
-                        '<option value="Manual">Manual</option>\n' +
-                        '</select>'
-                    )
-                } else {
-                    $("#sensor_settings").hide()
-                    $("#device_mode_container").html('' +
-                        '<select  onchange="changeViewDeviceMode()" id="device_mode" name="device_mode" class="form-select">\n' +
-                        '<option value="Auto" >Auto</option>\n' +
-                        '<option value="Manual" selected>Manual</option>\n' +
-                        '</select>'
-                    )
-                }
-                var columns = ''
-                if (farm_devices.length > 0) {
-                    if (device_settings.length === 0) {
-                        $.each(farm_devices, function (key, value) {
-                                var all_columns = value.columns
-                                var all_units = value.units
-                                for (let i = 0; i < all_columns.length; i++) {
-                                    columns += '                        <div class="row mt-3">\n' +
-                                        '                                <h5><strong>' + all_columns[i] + '</strong></h5>\n' +
-                                        '\n' +
-                                        '                                <div class="col">\n' +
-                                        '                                    <label for="threshold" class="form-label">Threshold</label>\n' +
-                                        '                                    <input required id="threshold" name="' + all_units[i] + '_threshold" type="number" class="form-control"\n' +
-                                        '                                           placeholder="Threshold to activate actuators"\n' +
-                                        '                                           aria-label="Threshold">\n' +
-                                        '                                </div>\n' +
-                                        '                                <div class="col">\n' +
-                                        '                                    <label for="condition" class="form-label">Condition</label>\n' +
-                                        '                                    <input required id="condition" name="' + all_units[i] + '_condition" type="text" class="form-control"\n' +
-                                        '                                           placeholder="Condition to activate actuators: <,=,>"\n' +
-                                        '                                           aria-label="Condition">\n' +
-                                        '                                </div>\n' +
-                                        '\n' +
-                                        '                                <div class="col">\n' +
-                                        '                                    <label for="duration" class="form-label">Duration(Mins)</label>\n' +
-                                        '                                    <input required id="duration" name="' + all_units[i] + '_duration" type="number" min="0" class="form-control"\n' +
-                                        '                                           placeholder="Duration before turning off actuators"\n' +
-                                        '                                           aria-label="Duration">\n' +
-                                        '                                </div>\n' +
-                                        '                            </div>'
-                                }
-                            }
-                        );
-
-
-                    } else {
-
-                    }
-                }
-                $("#device_details").html(device_details)
-                $("#sensor_settings").html(columns)
-
-
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'There\'s a problem loading data from the server!',
-                })
-            }
-
-
-        },
-        error: function () {
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
-        }
-    }).fail(function (jqXHR, exception) {
-        Swal.close()
-        var msg = '';
-        $("#login_btn").text('Sign in');
-        if (jqXHR.status === 0) {
-            msg = 'Network or API error.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Bad request [404]';
-        } else if (jqXHR.status == 401) {
-            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
-            setTimeout(function () {
-                window.location.href = 'login.php';
-            }, 1500);
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
-        } else {
-            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: msg,
-        })
-    });
-    ;
-}
-
-
-//device mode view
-function changeViewDeviceMode() {
-    // alert("d")
-    // console.log()
-    if ($('#device_mode').find(":selected").val() === "Manual") {
-        $("#sensor_settings").hide()
-    } else {
-        $("#sensor_settings").show()
-    }
-}
-
-//save device settings
-$("#device_settings_form").on('submit', function (e) {
-    var form_data = $(this).serialize();
-    $("#settings_btn").html('<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span> Saving...');
-    $.ajax({ //make ajax request to cart_process.php
-        headers: {
-            "accept": "application/json",
-            "Authorization": "JWT " + token
-        },
-        url: api + "api/user/devices/settings",
-        type: "POST",
-        // crossDomain: true,
-        // xhrFields: { withCredentials: true },
-        dataType: "json", //expect json value from server
-        data: form_data
-    }).done(function (response) { //on Ajax success
-        console.log(response)
-        $("#settings_btn").text('Save Settings');
-        if (response.error == false) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            Toast.fire({
-                icon: 'success',
-                title: 'Saved successfully'
-            })
-            setTimeout(function () {
-                location.reload()
-            }, 1500);
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
-        }
-
-    }).fail(function (jqXHR, exception) {
-        var msg = '';
-        $("#settings_btn").text('Save Settings');
-        if (jqXHR.status === 0) {
-            msg = 'Network or API error.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Bad request [404]';
-        } else if (jqXHR.status == 401) {
-            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
-            setTimeout(function () {
-                window.location.href = 'login.php';
-            }, 1500);
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
-        } else {
-            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: msg,
-        })
-    });
-
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-});
