@@ -208,6 +208,32 @@ $("#login_form").on('submit', function (e) {
 })
 
 
+//setup 
+const sensorChart1 = document.getElementById('sensorChart1').getContext('2d');
+const chart = new Chart(sensorChart1, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Sensor Data for Device 1',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderWidth: 1,
+            fill: true
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+    }
+});
+
+
+
 function populateDashboardSensors(){
     Swal.showLoading()
     $.ajax({
@@ -315,6 +341,39 @@ function populateDataOnSelectedSensor(){
             if (response.isError === false) {
                 data = response.data
                 if (data.graph_records.length > 0) {
+
+                    // const sensorData1 = [10, 15, 25, 30, 20, 35];
+                     // Extract data for charting
+                     var labels = data.graph_records.map(record => record.property_last_seen);
+                     var dataChart = data.graph_records.map(record => parseFloat(record.property_reading));
+                     chart.data.labels = labels;
+                     chart.data.datasets[0].data = dataChart;
+         
+                     // Update chart
+                      chart.update();
+                    // Create charts
+                    // const ctx1 = document.getElementById('sensorChart1').getContext('2d');
+                    // const sensorChart1 = new Chart(ctx1, {
+                    //     type: 'line',
+                    //     data: {
+                    //         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    //         datasets: [{
+                    //             label: 'Sensor Data for Device 1',
+                    //             data: sensorData1,
+                    //             borderColor: 'rgba(75, 192, 192, 1)',
+                    //             backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    //             borderWidth: 1,
+                    //             fill: true
+                    //         }]
+                    //     },
+                    //     options: {
+                    //         scales: {
+                    //             y: {
+                    //                 beginAtZero: true
+                    //             }
+                    //         },
+                    //     }
+                    // });
                   
                     $("#most_recent_highlight").html("<strong>"+Math.round(data.most_recent_highlight.property_reading).toFixed(0)+""+data.most_recent_highlight.property_unit+"</strong>")
                     $("#total_records_highlight").html("<strong>"+data.total_records_highlight+"</strong>")

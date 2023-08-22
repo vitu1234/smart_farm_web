@@ -241,31 +241,30 @@
     <script>
         // Simulated sensor data
         const sensorData1 = [10, 15, 25, 30, 20, 35];
-        const sensorData2 = [5, 12, 18, 24, 28, 15];
 
         // Create charts
-        const ctx1 = document.getElementById('sensorChart1').getContext('2d');
-        const sensorChart1 = new Chart(ctx1, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Sensor Data for Device 1',
-                    data: sensorData1,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1,
-                    fill: true
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-            }
-        });
+        // const ctx1 = document.getElementById('sensorChart1').getContext('2d');
+        // const sensorChart1 = new Chart(ctx1, {
+        //     type: 'line',
+        //     data: {
+        //         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        //         datasets: [{
+        //             label: 'Sensor Data for Device 1',
+        //             data: sensorData1,
+        //             borderColor: 'rgba(75, 192, 192, 1)',
+        //             backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        //             borderWidth: 1,
+        //             fill: true
+        //         }]
+        //     },
+        //     options: {
+        //         scales: {
+        //             y: {
+        //                 beginAtZero: true
+        //             }
+        //         },
+        //     }
+        // });
 
         
 
@@ -291,6 +290,7 @@
         // });
     </script>
 <script src="js/sweetalert2.js"></script>
+<script src="js/charts.js"></script>
 <script>
     $(document).ready(() => {
         // get_all_user_devices_dashboard("<?php echo $access_token; ?>")

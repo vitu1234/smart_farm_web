@@ -49,7 +49,7 @@ if(isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET[
   $wireless_device_identifier = addslashes($_GET['wireless_device_identifier']);
   $device_data_rows = $operation->retrieveMany("
   SELECT 
-    *
+    property_reading, property_unit,  DATE_FORMAT(property_last_seen, '%Hh:%i') as property_last_seen
   FROM device_property
   WHERE device_property.property_identifier = '".$property_identifier."' AND wireless_device_identifier= '".$wireless_device_identifier."'
   ORDER BY device_property_id DESC LIMIT 50;
