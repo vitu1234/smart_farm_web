@@ -4,6 +4,12 @@
 
   include("../connection/Functions.php");
   $operation = new Functions();
+
+  // echo "<pre>";
+  // print_r($_POST);
+  // echo "</pre>";
+
+  // die();
 if(isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET['dashboard_setup'] == 'true'){
     
     $device_propertiesRead = $operation->retrieveMany("
@@ -125,11 +131,39 @@ $device_propertiesRead = $operation->retrieveMany("
       
     );
     
-
-
     echo json_encode(["isError"=>false, "msg"=>"Device Data", "data"=>$array_data]);
   }else
    echo json_encode(["isError"=>true, "msg"=>"No Device Data Found..."]);
+}elseif(isset($_POST['property_identifier_sensor']) && !empty($_POST['property_identifier_sensor']) && isset($_POST['property_trigger_type']) && !empty($_POST['property_trigger_type']) && isset($_POST['property_value_trigger']) && !empty($_POST['property_value_trigger']) && isset($_POST['actuators_dropdown']) && !empty($_POST['actuators_dropdown']) && isset($_POST['property_trigger_action']) && !empty($_POST['property_trigger_action']) ){
+ 
+  // echo "hehe";
+  
+ 
+  $property_identifier_sensor = addslashes($_POST['property_identifier_sensor']);
+  $property_trigger_type = addslashes($_POST['property_trigger_type']);
+  $property_value_trigger = addslashes($_POST['property_value_trigger']);
+  $actuators_dropdown = addslashes($_POST['actuators_dropdown']);
+  $property_trigger_action = addslashes($_POST['property_trigger_action']);
+  $property_trigger_period = isset($_POST['property_trigger_period']) && $_POST['property_trigger_period'] !== '' ? addslashes($_POST['property_trigger_period']) : null;
+
+  $table="property_trigger";
+  $data = [
+    'property_identifier_sensor'=>"$property_identifier_sensor",
+    'property_identifier_actuator'=>"$actuators_dropdown",
+    'property_value_trigger'=>"$property_value_trigger",
+    'property_trigger_type'=>"$property_trigger_type",
+    'property_trigger_action'=>"$property_trigger_action",
+    'property_trigger_period'=>"$property_trigger_period"
+    ];
+  if($operation->insertData($table,$data) == 1){
+    //get user id
+    $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='".$property_identifier_sensor."' AND property_identifier_actuator ='".$actuators_dropdown."'");
+    
+    echo json_encode(["isError"=>false, "msg"=>"Device trigger saved", "data"=>$savedTrigger]);
+  }else{
+    echo json_encode(["isError"=>true, "msg"=>"Failed saving device trigger"]);
+  }
+
 }else{
   echo json_encode(["isError"=>true, "msg"=>"Unknown request"]);
 }

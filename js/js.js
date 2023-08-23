@@ -337,8 +337,10 @@ function populateDashboardSensors(){
 
 function populateDataOnSelectedSensor(){
     // alert($("#sensors_dropdown").val())
+    $("#bottom_container").show()
     var selectedValue = $("#sensors_dropdown").val()
     const [property_identifier, wireless_device_identifier,watch_sensor_name] = selectedValue.split("<>");
+    $("#property_identifier_sensor").val(property_identifier)
     Swal.showLoading()
     $.ajax({
         headers: {
@@ -462,7 +464,7 @@ function populateDataOnSelectedSensor(){
 
 function periodicUpdate(){
     var selectedValue = $("#sensors_dropdown").val()
-    console.log("Refreshing data with interval set")
+    // console.log("Refreshing data with interval set")
     if (selectedValue !== null && selectedValue !== "") {
         const [property_identifier, wireless_device_identifier,watch_sensor_name] = selectedValue.split("<>");
         $.ajax({
@@ -524,6 +526,112 @@ function periodicUpdate(){
         console.log("No sensor selected from dropdown!")
     }
 }
+
+// login user
+$("#saveTriggerForm").on('submit', function (e) {
+    var form_data = $(this).serialize();
+    $("#submitBtnTrigger").html('<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Saving...');
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+        },
+        url: "backend/api/index.php",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        // $("#btn_add").text('Register');
+        // $("#user_register_form")[0].reset();
+
+        $("#submitBtnTrigger").text('Save');
+        $("#saveTriggerForm")[0].reset();
+         if (response.isError === false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Saved successfully'
+            })
+            
+            // setTimeout(function () {
+            //     window.location.href = 'dashboard.php';
+            // }, 1000);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        var msg = '';
+        $("#login_btn").text('Sign in');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------OLD CODE BELOW---------------------------
+//-------------------------------OLD CODE BELOW---------------------------
+//-------------------------------OLD CODE BELOW---------------------------
+//-------------------------------OLD CODE BELOW---------------------------
+//-------------------------------OLD CODE BELOW---------------------------
 
 //user devices on dashboard
 function get_all_user_devices_dashboard(token) {
