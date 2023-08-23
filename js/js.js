@@ -390,32 +390,32 @@ function populateDataOnSelectedSensor() {
                     // triggers set for this sensor or not
                     console.log(data)
                     console.log(data.associated_trigger)
-                    if (data.associated_trigger != "savedTrigger" ) {
-                        var checkedAbove =''
-                        var checkedBelow =''
-                        var checkedOn =''
-                        var checkedOff =''
+                    if (data.associated_trigger != "savedTrigger") {
+                        var checkedAbove = ''
+                        var checkedBelow = ''
+                        var checkedOn = ''
+                        var checkedOff = ''
 
-                        data.associated_trigger.property_trigger_type === "Above" ? checkedAbove="checked" : checkedBelow="checked"
-                        data.associated_trigger.property_trigger_action === "OFF" ? checkedOff="checked" : checkedOn="checked"
+                        data.associated_trigger.property_trigger_type === "Above" ? checkedAbove = "checked" : checkedBelow = "checked"
+                        data.associated_trigger.property_trigger_action === "OFF" ? checkedOff = "checked" : checkedOn = "checked"
                         $("#triggerContainer").html(
                             '<form method="post" id="EditsaveTriggerForm" >' +
-                            '<input type="hidden" value="'+data.associated_trigger.property_trigger_id+'" name="property_trigger_id" id="property_trigger_id" />' +
-                            '<input type="hidden" value="'+data.associated_trigger.property_identifier_sensor+'" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
-                            '<input type="hidden" value="'+data.associated_trigger.property_identifier_actuator+'" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_trigger_id + '" name="property_trigger_id" id="property_trigger_id" />' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_identifier_sensor + '" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_identifier_actuator + '" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
                             '<div class="bg-body-secondary p-2">' +
                             '<span class=" mt-1"><b>When data goes ...</b></span>' +
                             '<div class="custom-control custom-radio">' +
-                            '<input required type="radio" id="customRadio1" '+checkedAbove+' value="Above" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<input required type="radio" id="customRadio1" ' + checkedAbove + ' value="Above" name="eproperty_trigger_type" class="custom-control-input">' +
                             '<label class="custom-control-label" for="customRadio1">Above</label>' +
                             '</div>' +
                             '<div class="custom-control custom-radio">' +
-                            '<input required type="radio" id="customRadio2" '+checkedBelow+' value="Below" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<input required type="radio" id="customRadio2" ' + checkedBelow + ' value="Below" name="eproperty_trigger_type" class="custom-control-input">' +
                             '<label class="custom-control-label" for="customRadio2">Below</label>' +
                             '</div>' +
                             '<span class=" mt-1"><b>This value:</b></span>' +
                             '<div class="col-md-6 mb-3">' +
-                            '<input type="number" class="form-control" value="'+data.associated_trigger.property_value_trigger+'" id="property_value_trigger" name="eproperty_value_trigger" min="0" value="" required>' +
+                            '<input type="number" class="form-control" value="' + data.associated_trigger.property_value_trigger + '" id="property_value_trigger" name="eproperty_value_trigger" min="0" value="" required>' +
                             '</div>' +
                             '</div>' +
 
@@ -427,11 +427,11 @@ function populateDataOnSelectedSensor() {
                             '</div>' +
 
                             '<div class="custom-control custom-radio">' +
-                            '<input required type="radio" id="customRadio11" '+checkedOn+' value="ON" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<input required type="radio" id="customRadio11" ' + checkedOn + ' value="ON" name="eproperty_trigger_action" class="custom-control-input">' +
                             '<label class="custom-control-label" for="customRadio11">On</label>' +
                             '</div>' +
                             '<div class="custom-control custom-radio">' +
-                            '<input required type="radio" id="customRadio22" '+checkedOff+' value="OFF" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<input required type="radio" id="customRadio22" ' + checkedOff + ' value="OFF" name="eproperty_trigger_action" class="custom-control-input">' +
                             '<label class="custom-control-label" for="customRadio22">Off</label>' +
                             '</div>' +
 
@@ -439,21 +439,21 @@ function populateDataOnSelectedSensor() {
                             '<span class=" mt-1"><b>For these minutes ...</b></span><br />' +
                             '<small class="text-danger">(Leave blank to keep action infinite)</small>' +
                             '<div class="col-md-6 mb-3">' +
-                            '<input type="number" value="'+data.associated_trigger.property_trigger_period+'" class="form-control" id="property_trigger_period" name="eproperty_trigger_period" min="0" />' +
+                            '<input type="number" value="' + data.associated_trigger.property_trigger_period + '" class="form-control" id="property_trigger_period" name="eproperty_trigger_period" min="0" />' +
                             '</div>' +
                             '</div>' +
 
                             '<button id="submitBtnTriggerEdit" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Update</button>' +
-                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\''+data.associated_trigger.property_trigger_id+'\',\''+property_identifier+'\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
+                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\'' + data.associated_trigger.property_trigger_id + '\',\'' + property_identifier + '\', \''+watch_sensor_name+'\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
                             '</form>'
                         );
 
                         var actuators_dropdown = ''
                         if (data.connected_actuators.length > 0) {
                             $.each(data.connected_actuators, function (key, value) {
-                                if(value.property_identifier == data.associated_trigger.property_identifier_actuator){
+                                if (value.property_identifier == data.associated_trigger.property_identifier_actuator) {
                                     actuators_dropdown += '<option selected value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
-                                }else{
+                                } else {
                                     actuators_dropdown += '<option value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
                                 }
                             });
@@ -464,7 +464,7 @@ function populateDataOnSelectedSensor() {
                             $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                             $("#actuators_dropdown").html(actuators_dropdown)
                         }
-                        
+
                     } else {
                         $("#triggerContainer").html(
                             '<form method="post" id="saveTriggerForm">' +
@@ -651,7 +651,7 @@ function periodicUpdate() {
 
 
 //add trigger
-$(document).on('submit', '#saveTriggerForm', function(e) {
+$(document).on('submit', '#saveTriggerForm', function (e) {
     e.preventDefault(); // Prevent the default form submission
     Swal.showLoading()
     var selectedValue = $("#sensors_dropdown").val()
@@ -694,7 +694,7 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
         // $("#user_register_form")[0].reset();
         Swal.close()
         $("#submitBtnTrigger").text('Save');
-        $("#saveTriggerForm")[0].reset();
+        // $("#saveTriggerForm")[0].reset();
         if (response.isError === false) {
             const Toast = Swal.mixin({
                 toast: true,
@@ -756,7 +756,7 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
 });
 
 //update trigger
-$(document).on('submit', '#EditsaveTriggerForm', function(e) {
+$(document).on('submit', '#EditsaveTriggerForm', function (e) {
     e.preventDefault(); // Prevent the default form submission
     var selectedValue = $("#sensors_dropdown").val()
     const [property_identifier_sensor, wireless_device_identifier, watch_sensor_name] = selectedValue.split("<>");
@@ -858,14 +858,14 @@ $(document).on('submit', '#EditsaveTriggerForm', function(e) {
     e.stopImmediatePropagation();
 });
 
-function deleteTrigger(deleteTriggerId, property_identifier){
+function deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name) {
     Swal.showLoading()
     $("#submitBtnTriggerDelete").html('<span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>Deleting ...');
     $.ajax({
         headers: {
             "accept": "application/json",
         },
-        url: "backend/api/index.php?deleteTriggerId="+deleteTriggerId+"&&delete_property_identifier="+property_identifier,
+        url: "backend/api/index.php?deleteTriggerId=" + deleteTriggerId + "&&delete_property_identifier=" + property_identifier,
         method: 'GET',
         success: function (response) {
             console.log(response)
@@ -883,11 +883,192 @@ function deleteTrigger(deleteTriggerId, property_identifier){
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 })
-    
+
                 Toast.fire({
                     icon: 'success',
                     title: 'Deleted trigger successfully'
                 })
+
+                //resetup the dashboard
+                ata = response.data
+                if (data.graph_records.length > 0) {
+
+                    // const sensorData1 = [10, 15, 25, 30, 20, 35];
+                    // Extract data for charting
+                    var labels = data.graph_records.map(record => record.property_last_seen);
+                    var dataChart = data.graph_records.map(record => parseFloat(record.property_reading));
+                    chart.data.labels = labels;
+                    chart.data.datasets[0].data = dataChart;
+                    chart.data.datasets[0].label = watch_sensor_name;
+
+
+                    // Update chart
+                    chart.update();
+                    if (data.connected_sensors.length > 0) {
+                        $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    } else {
+                        $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    }
+
+                    if (data.connected_actuators.length > 0) {
+                        $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    } else {
+                        $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    }
+
+
+                    $("#most_recent_highlight").html("<strong>" + Math.round(data.most_recent_highlight.property_reading).toFixed(0) + "" + data.most_recent_highlight.property_unit + "</strong>")
+                    $("#total_records_highlight").html("<strong>" + data.total_records_highlight + "</strong>")
+                    $("#average_reading_highlight").html("<strong>" + data.average_highlight.average + data.average_highlight.property_unit + "</strong>")
+
+
+                    //SETUP TRIGGER UI
+                    // triggers set for this sensor or not
+                    console.log(data)
+                    console.log(data.associated_trigger)
+                    if (data.associated_trigger != "savedTrigger") {
+                        var checkedAbove = ''
+                        var checkedBelow = ''
+                        var checkedOn = ''
+                        var checkedOff = ''
+
+                        data.associated_trigger.property_trigger_type === "Above" ? checkedAbove = "checked" : checkedBelow = "checked"
+                        data.associated_trigger.property_trigger_action === "OFF" ? checkedOff = "checked" : checkedOn = "checked"
+                        $("#triggerContainer").html(
+                            '<form method="post" id="EditsaveTriggerForm" >' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_trigger_id + '" name="property_trigger_id" id="property_trigger_id" />' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_identifier_sensor + '" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="hidden" value="' + data.associated_trigger.property_identifier_actuator + '" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<div class="bg-body-secondary p-2">' +
+                            '<span class=" mt-1"><b>When data goes ...</b></span>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio1" ' + checkedAbove + ' value="Above" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio1">Above</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio2" ' + checkedBelow + ' value="Below" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio2">Below</label>' +
+                            '</div>' +
+                            '<span class=" mt-1"><b>This value:</b></span>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" class="form-control" value="' + data.associated_trigger.property_value_trigger + '" id="property_value_trigger" name="eproperty_value_trigger" min="0" value="" required>' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<div class="bg-body-secondary p-2 mt-2">' +
+                            '<span class=" mt-1"><b>Make this actuator ...</b></span>' +
+                            '<div class="form-group">' +
+                            '<select class="form-select" id="actuators_dropdown" name="eactuators_dropdown" required>' +
+                            '</select>' +
+                            '</div>' +
+
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio11" ' + checkedOn + ' value="ON" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio11">On</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio22" ' + checkedOff + ' value="OFF" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio22">Off</label>' +
+                            '</div>' +
+
+                            '<br />' +
+                            '<span class=" mt-1"><b>For these minutes ...</b></span><br />' +
+                            '<small class="text-danger">(Leave blank to keep action infinite)</small>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" value="' + data.associated_trigger.property_trigger_period + '" class="form-control" id="property_trigger_period" name="eproperty_trigger_period" min="0" />' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<button id="submitBtnTriggerEdit" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Update</button>' +
+                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\'' + data.associated_trigger.property_trigger_id + '\',\'' + property_identifier + '\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
+                            '</form>'
+                        );
+
+                        var actuators_dropdown = ''
+                        if (data.connected_actuators.length > 0) {
+                            $.each(data.connected_actuators, function (key, value) {
+                                if (value.property_identifier == data.associated_trigger.property_identifier_actuator) {
+                                    actuators_dropdown += '<option selected value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                                } else {
+                                    actuators_dropdown += '<option value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                                }
+                            });
+
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        } else {
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        }
+
+                    } else {
+                        $("#triggerContainer").html(
+                            '<form method="post" id="saveTriggerForm">' +
+                            '<input type="text" name="property_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="text" name="property_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<div class="bg-body-secondary p-2">' +
+                            '<span class=" mt-1"><b>When data goes ...</b></span>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio1" value="Above" name="property_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio1">Above</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio2" value="Below" name="property_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio2">Below</label>' +
+                            '</div>' +
+                            '<span class=" mt-1"><b>This value:</b></span>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" class="form-control" id="property_value_trigger" name="property_value_trigger" min="0" value="" required>' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<div class="bg-body-secondary p-2 mt-2">' +
+                            '<span class=" mt-1"><b>Make this actuator ...</b></span>' +
+                            '<div class="form-group">' +
+                            '<select class="form-select" id="actuators_dropdown" name="actuators_dropdown" required>' +
+                            '</select>' +
+                            '</div>' +
+
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio11" value="ON" name="property_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio11">On</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio22" value="OFF" name="property_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio22">Off</label>' +
+                            '</div>' +
+
+                            '<br />' +
+                            '<span class=" mt-1"><b>For these minutes ...</b></span><br />' +
+                            '<small class="text-danger">(Leave blank to keep action infinite)</small>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" value="" class="form-control" id="property_trigger_period" name="property_trigger_period" min="0" />' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<button id="submitBtnTrigger" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Save</button>' +
+                            '</form>'
+                        );
+
+                        var actuators_dropdown = '<option disabled selected>---</option>'
+                        if (data.connected_actuators.length > 0) {
+                            $.each(data.connected_actuators, function (key, value) {
+                                actuators_dropdown += '<option value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                            });
+
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        } else {
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        }
+                    }
+
+                } else {
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    $("#sensors_dropdown").html(sensors_dropdown)
+                }
+
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -940,7 +1121,7 @@ function deleteTrigger(deleteTriggerId, property_identifier){
 }
 
 
-function showDeleteTriggerConfirm(deleteTriggerId, property_identifier){
+function showDeleteTriggerConfirm(deleteTriggerId, property_identifier,watch_sensor_name) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -949,11 +1130,11 @@ function showDeleteTriggerConfirm(deleteTriggerId, property_identifier){
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
-            deleteTrigger(deleteTriggerId,property_identifier)
+            deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name)
         }
-      })
+    })
 }
 
 
