@@ -444,7 +444,7 @@ function populateDataOnSelectedSensor() {
                             '</div>' +
 
                             '<button id="submitBtnTriggerEdit" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Update</button>' +
-                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\'' + data.associated_trigger.property_trigger_id + '\',\'' + property_identifier + '\', \''+watch_sensor_name+'\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
+                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\'' + data.associated_trigger.property_trigger_id + '\',\'' + property_identifier + '\', \'' + watch_sensor_name + '\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
                             '</form>'
                         );
 
@@ -677,7 +677,6 @@ $(document).on('submit', '#saveTriggerForm', function (e) {
     //     }
     // });
 
-
     $("#submitBtnTrigger").html('<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Saving...');
     $.ajax({ //make ajax request to cart_process.php
         headers: {
@@ -696,6 +695,87 @@ $(document).on('submit', '#saveTriggerForm', function (e) {
         $("#submitBtnTrigger").text('Save');
         // $("#saveTriggerForm")[0].reset();
         if (response.isError === false) {
+            // console.log("SAVE REPSONSE ")
+            //set the data
+            // console.log(response.data)
+            var data = response.data
+            var checkedAbove = ''
+            var checkedBelow = ''
+            var checkedOn = ''
+            var checkedOff = ''
+
+            data.associated_trigger.property_trigger_type === "Above" ? checkedAbove = "checked" : checkedBelow = "checked"
+            data.associated_trigger.property_trigger_action === "OFF" ? checkedOff = "checked" : checkedOn = "checked"
+            $("#triggerContainer").html(
+                '<form method="post" id="EditsaveTriggerForm" >' +
+                '<input type="text" value="' + data.associated_trigger.property_trigger_id + '" name="property_trigger_id" id="property_trigger_id" />' +
+                '<input type="text" value="' + data.associated_trigger.property_identifier_sensor + '" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
+                '<input type="text" value="' + data.associated_trigger.property_identifier_actuator + '" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
+                '<div class="bg-body-secondary p-2">' +
+                '<span class=" mt-1"><b>When data goes ...</b></span>' +
+                '<div class="custom-control custom-radio">' +
+                '<input required type="radio" id="customRadio1" ' + checkedAbove + ' value="Above" name="eproperty_trigger_type" class="custom-control-input">' +
+                '<label class="custom-control-label" for="customRadio1">Above</label>' +
+                '</div>' +
+                '<div class="custom-control custom-radio">' +
+                '<input required type="radio" id="customRadio2" ' + checkedBelow + ' value="Below" name="eproperty_trigger_type" class="custom-control-input">' +
+                '<label class="custom-control-label" for="customRadio2">Below</label>' +
+                '</div>' +
+                '<span class=" mt-1"><b>This value:</b></span>' +
+                '<div class="col-md-6 mb-3">' +
+                '<input type="number" class="form-control" value="' + data.associated_trigger.property_value_trigger + '" id="property_value_trigger" name="eproperty_value_trigger" min="0" required>' +
+                '</div>' +
+                '</div>' +
+
+                '<div class="bg-body-secondary p-2 mt-2">' +
+                '<span class=" mt-1"><b>Make this actuator ...</b></span>' +
+                '<div class="form-group">' +
+                '<select class="form-select" id="actuators_dropdown" name="eactuators_dropdown" required>' +
+                '</select>' +
+                '</div>' +
+
+                '<div class="custom-control custom-radio">' +
+                '<input required type="radio" id="customRadio11" ' + checkedOn + ' value="ON" name="eproperty_trigger_action" class="custom-control-input">' +
+                '<label class="custom-control-label" for="customRadio11">On</label>' +
+                '</div>' +
+                '<div class="custom-control custom-radio">' +
+                '<input required type="radio" id="customRadio22" ' + checkedOff + ' value="OFF" name="eproperty_trigger_action" class="custom-control-input"/>' +
+                '<label class="custom-control-label" for="customRadio22">Off</label>' +
+                '</div>' +
+
+                '<br />' +
+                '<span class=" mt-1"><b>For these minutes ...</b></span><br />' +
+                '<small class="text-danger">(Leave blank to keep action infinite)</small>' +
+                '<div class="col-md-6 mb-3">' +
+                '<input type="number" value="' + data.associated_trigger.property_trigger_period + '" class="form-control" id="property_trigger_period" name="eproperty_trigger_period" min="0" />' +
+                '</div>' +
+                '</div>' +
+
+                '<button id="submitBtnTriggerEdit" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Update</button>' +
+                '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\'' + data.associated_trigger.property_trigger_id + '\',\'' + property_identifier_sensor + '\', \'' + watch_sensor_name + '\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
+                '</form>'
+            );
+
+            var actuators_dropdown = ''
+            if (data.connected_actuators.length > 0) {
+                $.each(data.connected_actuators, function (key, value) {
+                    if (value.property_identifier == data.associated_trigger.property_identifier_actuator) {
+                        actuators_dropdown += '<option selected value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                    } else {
+                        actuators_dropdown += '<option value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                    }
+                });
+
+                $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                $("#actuators_dropdown").html(actuators_dropdown)
+            } else {
+                $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                $("#actuators_dropdown").html(actuators_dropdown)
+            }
+
+
+
+
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -858,7 +938,7 @@ $(document).on('submit', '#EditsaveTriggerForm', function (e) {
     e.stopImmediatePropagation();
 });
 
-function deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name) {
+function deleteTrigger(deleteTriggerId, property_identifier, watch_sensor_name) {
     Swal.showLoading()
     $("#submitBtnTriggerDelete").html('<span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>Deleting ...');
     $.ajax({
@@ -890,7 +970,7 @@ function deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name) {
                 })
 
                 //resetup the dashboard
-                ata = response.data
+                data = response.data
                 if (data.graph_records.length > 0) {
 
                     // const sensorData1 = [10, 15, 25, 30, 20, 35];
@@ -1121,7 +1201,7 @@ function deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name) {
 }
 
 
-function showDeleteTriggerConfirm(deleteTriggerId, property_identifier,watch_sensor_name) {
+function showDeleteTriggerConfirm(deleteTriggerId, property_identifier, watch_sensor_name) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -1132,7 +1212,7 @@ function showDeleteTriggerConfirm(deleteTriggerId, property_identifier,watch_sen
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            deleteTrigger(deleteTriggerId, property_identifier,watch_sensor_name)
+            deleteTrigger(deleteTriggerId, property_identifier, watch_sensor_name)
         }
     })
 }

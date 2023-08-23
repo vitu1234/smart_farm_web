@@ -168,7 +168,29 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
     //get user id
     $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='" . $property_identifier_sensor . "' AND property_identifier_actuator ='" . $actuators_dropdown . "'");
 
-    echo json_encode(["isError" => false, "msg" => "Device trigger saved", "data" => $savedTrigger]);
+    $device_propertiesReadWrite = $operation->retrieveMany("
+    SELECT 
+          wireless_device_name, wireless_device.wireless_device_identifier,
+          wireless_device.wireless_device_connection,
+          property_identifier,
+          property_name
+      FROM device_property
+        INNER JOIN wireless_device
+        ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+      WHERE device_property.property_access_mode = 'readwrite'
+      GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+        wireless_device.wireless_device_identifier,property_identifier,property_name 
+      ORDER BY property_name ASC;
+  ");
+
+    $array_data =array(
+      "associated_trigger"=>$savedTrigger,
+      "connected_actuators"=>$device_propertiesReadWrite
+    );
+
+
+
+    echo json_encode(["isError" => false, "msg" => "Device trigger saved", "data" => $array_data]);
   } else {
     echo json_encode(["isError" => true, "msg" => "Failed saving device trigger"]);
   }
@@ -201,10 +223,10 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
   if ($operation->updateData($table, $data, $where) == 1) {
     //get user id
     $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='" . $property_identifier_sensor . "' AND property_identifier_actuator ='" . $actuators_dropdown . "'");
-
-    echo json_encode(["isError" => false, "msg" => "Device trigger saved", "data" => $savedTrigger]);
+    
+    echo json_encode(["isError" => false, "msg" => "Device trigger updated", "data" => $savedTrigger]);
   } else {
-    echo json_encode(["isError" => true, "msg" => "Failed saving device trigger"]);
+    echo json_encode(["isError" => true, "msg" => "Failed updating device trigger"]);
   }
 
   //delete property
