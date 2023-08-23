@@ -215,7 +215,7 @@ const chart = new Chart(sensorChart1, {
     data: {
         labels: [],
         datasets: [{
-            label: 'Sensor Data for Device 1',
+            label: '',
             data: [],
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -224,6 +224,15 @@ const chart = new Chart(sensorChart1, {
         }]
     },
     options: {
+        animations: {
+            tension: {
+              duration: 1000,
+              easing: 'linear',
+              from: 1,
+              to: 0,
+              loop: true
+            }
+          },
         scales: {
             y: {
                 beginAtZero: true
@@ -231,6 +240,8 @@ const chart = new Chart(sensorChart1, {
         },
     }
 });
+
+chart.options.animation = true;
 
 
 
@@ -251,7 +262,7 @@ function populateDashboardSensors(){
                 if (data.readDevices.length > 0) {
                     var sensors_dropdown = '<option disabled selected>---</option>'
                     $.each(data.readDevices, function (key, value) {
-                        sensors_dropdown+='<option value="'+value.property_identifier+'<>'+value.wireless_device_identifier+'">'+value.property_name+' - '+value.wireless_device_name+' - '+value.wireless_device_connection.toUpperCase()+'</option>'
+                        sensors_dropdown+='<option value="'+value.property_identifier+'<>'+value.wireless_device_identifier+'<>'+value.property_name+' - '+value.wireless_device_name+' - '+value.wireless_device_connection.toUpperCase()+'">'+value.property_name+' - '+value.wireless_device_name+' - '+value.wireless_device_connection.toUpperCase()+'</option>'
                     });
 
                     $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readDevices.length+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
@@ -327,7 +338,7 @@ function populateDashboardSensors(){
 function populateDataOnSelectedSensor(){
     // alert($("#sensors_dropdown").val())
     var selectedValue = $("#sensors_dropdown").val()
-    const [property_identifier, wireless_device_identifier] = selectedValue.split("<>");
+    const [property_identifier, wireless_device_identifier,watch_sensor_name] = selectedValue.split("<>");
     Swal.showLoading()
     $.ajax({
         headers: {
@@ -348,6 +359,8 @@ function populateDataOnSelectedSensor(){
                      var dataChart = data.graph_records.map(record => parseFloat(record.property_reading));
                      chart.data.labels = labels;
                      chart.data.datasets[0].data = dataChart;
+                     chart.data.datasets[0].label = watch_sensor_name;
+                     
          
                      // Update chart
                       chart.update();
@@ -374,6 +387,19 @@ function populateDataOnSelectedSensor(){
                     //         },
                     //     }
                     // });
+
+                    if(data.connected_sensors > 0){
+                        $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_sensors+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    }else{
+                        $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_sensors+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                    }
+
+                    if(data.connected_actuators > 0){
+                        $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_actuators+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    }else{
+                        $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_actuators+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    }
+
                   
                     $("#most_recent_highlight").html("<strong>"+Math.round(data.most_recent_highlight.property_reading).toFixed(0)+""+data.most_recent_highlight.property_unit+"</strong>")
                     $("#total_records_highlight").html("<strong>"+data.total_records_highlight+"</strong>")
@@ -434,6 +460,70 @@ function populateDataOnSelectedSensor(){
     });
 }
 
+function periodicUpdate(){
+    var selectedValue = $("#sensors_dropdown").val()
+    console.log("Refreshing data with interval set")
+    if (selectedValue !== null && selectedValue !== "") {
+        const [property_identifier, wireless_device_identifier,watch_sensor_name] = selectedValue.split("<>");
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                // "Authorization": "JWT " + token
+            },
+            url: "backend/api/index.php?property_identifier="+property_identifier+"&&wireless_device_identifier="+wireless_device_identifier,
+            method: 'GET',
+            success: function (response) {
+                Swal.close()
+                if (response.isError === false) {
+                    data = response.data
+                    if (data.graph_records.length > 0) {
+
+                        // const sensorData1 = [10, 15, 25, 30, 20, 35];
+                        // Extract data for charting
+                        var labels = data.graph_records.map(record => record.property_last_seen);
+                        var dataChart = data.graph_records.map(record => parseFloat(record.property_reading));
+                        chart.data.labels = labels;
+                        chart.data.datasets[0].data = dataChart;
+                        chart.data.datasets[0].label = watch_sensor_name;
+                        // Update chart
+                        chart.update();
+                        
+                        if(data.connected_sensors > 0){
+                            $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_sensors+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                        }else{
+                            $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_sensors+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                        }
+    
+                        if(data.connected_actuators > 0){
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_actuators+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                        }else{
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.connected_actuators+'</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                        }
+
+                        $("#most_recent_highlight").html("<strong>"+Math.round(data.most_recent_highlight.property_reading).toFixed(0)+""+data.most_recent_highlight.property_unit+"</strong>")
+                        $("#total_records_highlight").html("<strong>"+data.total_records_highlight+"</strong>")
+                        $("#average_reading_highlight").html("<strong>"+data.average_highlight.average+data.average_highlight.property_unit+"</strong>")
+
+                    } else {
+                        $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>'+data.readDevices.length+'</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                        $("#sensors_dropdown").html(sensors_dropdown)
+                    }
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'There\'s a problem loading data from the server!',
+                    })
+                }
+
+
+            }
+        })
+    }else{
+        console.log("No sensor selected from dropdown!")
+    }
+}
 
 //user devices on dashboard
 function get_all_user_devices_dashboard(token) {

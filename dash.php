@@ -26,7 +26,6 @@
             <a class="float-end btn btn-outline-primary mx-2">Actuators <i class="fas fa-plug"></i></a>
         </div>
     </div>
- 
     <div class="row mb-4">
         <div class="col-md-3 rounded">
             <div class="card shadow-lg" style="height: 100px">
@@ -47,19 +46,20 @@
                 <div class="card-body shadow-lg">
 
                     <div class="row " style="height: 100%">
-                        <div class="col ">
+                        <!-- <div class="col ">
                             <button style="height: 100%" class="btn btn-outline-secondary">Pause <span
                                     class="fa fa-pause" aria-hidden="true"></span></button>
-                        </div>
+                        </div> -->
                         <div class="col">
                             <label for="selected-update" class="label">Update every:</label>
                             <div class="form-group ">
-                                <select class="form-select" id="selected-update">
-                                    <option value="100ms">100ms</option>
-                                    <option value="500ms">500ms</option>
-                                    <option value="1s">1s</option>
-                                    <option value="3s">3s</option>
-                                    <option value="5s">5s</option>
+                                <select class="form-select" id="selected_update">
+                                    <option value="5000">5s</option>
+                                    <option value="10000">10s</option>
+                                    <option value="15000">15s</option>
+                                    <option value="20000">20s</option>
+                                    <option value="30000">30s</option>
+                                    <option value="60000">1M</option>
                                 </select>
                             </div>
                         </div>
@@ -295,6 +295,8 @@
     $(document).ready(() => {
         // get_all_user_devices_dashboard("<?php echo $access_token; ?>")
         populateDashboardSensors()
+        var periodDelay = $("#selected_update").val()
+        setInterval(periodicUpdate, periodDelay);
     })
 </script>
 <script src="js/js.js"></script>
