@@ -153,8 +153,8 @@
             <div class="col-md-2 bg-light"></div>
             <div class="col-md-4 bg-light">
 
-                <div class="container-fluid shadow p-3" style="width: 100%; border-radius: 5px">
-                    <h4 class="text-dark-emphasis">Create a trigger</h4>
+                <div id="triggerContainer" class="container-fluid shadow p-3" style="width: 100%; border-radius: 5px">
+                    <!-- <h4 class="text-dark-emphasis">Create a trigger</h4>
 
                     <form method="post" id="saveTriggerForm">
                         <input type="hidden" name="property_identifier_sensor" id="property_identifier_sensor" />
@@ -200,7 +200,7 @@
                             </div>
                         </div>
                         <button id="submitBtnTrigger" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Save</button>
-                    </form>
+                    </form> -->
 
                 </div>
             </div>
@@ -297,6 +297,9 @@
                 var periodDelay = $("#selected_update").val()
                 setInterval(periodicUpdate, periodDelay);
             })
+
+
+           
         </script>
         <script src="js/js.js"></script>
     </main>

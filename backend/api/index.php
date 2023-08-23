@@ -43,8 +43,8 @@ if(isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET[
   ");
 
   $data = array(
-    "readDevices" =>$device_propertiesRead,
-    "readwriteDevices"=>$device_propertiesReadWrite
+    "connected_sensors" =>$device_propertiesRead,
+    "connected_actuators"=>$device_propertiesReadWrite
   );
 
   
@@ -119,6 +119,7 @@ $device_propertiesRead = $operation->retrieveMany("
       ORDER BY property_name ASC;
   ");
 
+  $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='".$property_identifier."' ORDER BY property_trigger_id DESC LIMIT 1");
 
   if(count($device_data) > 0){ 
     $array_data = array(
@@ -126,15 +127,16 @@ $device_propertiesRead = $operation->retrieveMany("
       "average_highlight" =>$average,
       "most_recent_highlight"=>$device_data,
       "graph_records" =>$device_data_rows,
-      "connected_sensors" =>count($device_propertiesRead),
-      "connected_actuators" =>count($device_propertiesReadWrite),
+      "connected_sensors" =>$device_propertiesRead,
+      "connected_actuators" =>$device_propertiesReadWrite,
+      "associated_trigger" =>$savedTrigger,
       
     );
     
     echo json_encode(["isError"=>false, "msg"=>"Device Data", "data"=>$array_data]);
   }else
    echo json_encode(["isError"=>true, "msg"=>"No Device Data Found..."]);
-}elseif(isset($_POST['property_identifier_sensor']) && !empty($_POST['property_identifier_sensor']) && isset($_POST['property_trigger_type']) && !empty($_POST['property_trigger_type']) && isset($_POST['property_value_trigger']) && !empty($_POST['property_value_trigger']) && isset($_POST['actuators_dropdown']) && !empty($_POST['actuators_dropdown']) && isset($_POST['property_trigger_action']) && !empty($_POST['property_trigger_action']) ){
+}elseif(isset($_POST['property_identifier_sensor']) && !empty($_POST['property_identifier_sensor']) && isset($_POST['property_trigger_type']) && !empty($_POST['property_trigger_type']) && isset($_POST['property_value_trigger']) && !empty($_POST['property_value_trigger']) && isset($_POST['property_identifier_actuator']) && !empty($_POST['property_identifier_actuator']) && isset($_POST['property_trigger_action']) && !empty($_POST['property_trigger_action']) ){
  
   // echo "hehe";
   
@@ -142,7 +144,7 @@ $device_propertiesRead = $operation->retrieveMany("
   $property_identifier_sensor = addslashes($_POST['property_identifier_sensor']);
   $property_trigger_type = addslashes($_POST['property_trigger_type']);
   $property_value_trigger = addslashes($_POST['property_value_trigger']);
-  $actuators_dropdown = addslashes($_POST['actuators_dropdown']);
+  $actuators_dropdown = addslashes($_POST['property_identifier_actuator']);
   $property_trigger_action = addslashes($_POST['property_trigger_action']);
   $property_trigger_period = isset($_POST['property_trigger_period']) && $_POST['property_trigger_period'] !== '' ? addslashes($_POST['property_trigger_period']) : null;
 
