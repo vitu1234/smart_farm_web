@@ -468,8 +468,8 @@ function populateDataOnSelectedSensor() {
                     } else {
                         $("#triggerContainer").html(
                             '<form method="post" id="saveTriggerForm">' +
-                            '<input type="text" name="property_identifier_sensor" id="property_identifier_sensor" />' +
-                            '<input type="text" name="property_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<input type="hidden" name="property_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="hidden" name="property_identifier_actuator" id="property_identifier_actuator" />' +
                             '<div class="bg-body-secondary p-2">' +
                             '<span class=" mt-1"><b>When data goes ...</b></span>' +
                             '<div class="custom-control custom-radio">' +
@@ -708,9 +708,9 @@ $(document).on('submit', '#saveTriggerForm', function (e) {
             data.associated_trigger.property_trigger_action === "OFF" ? checkedOff = "checked" : checkedOn = "checked"
             $("#triggerContainer").html(
                 '<form method="post" id="EditsaveTriggerForm" >' +
-                '<input type="text" value="' + data.associated_trigger.property_trigger_id + '" name="property_trigger_id" id="property_trigger_id" />' +
-                '<input type="text" value="' + data.associated_trigger.property_identifier_sensor + '" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
-                '<input type="text" value="' + data.associated_trigger.property_identifier_actuator + '" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
+                '<input type="hidden" value="' + data.associated_trigger.property_trigger_id + '" name="property_trigger_id" id="property_trigger_id" />' +
+                '<input type="hidden" value="' + data.associated_trigger.property_identifier_sensor + '" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
+                '<input type="hidden" value="' + data.associated_trigger.property_identifier_actuator + '" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
                 '<div class="bg-body-secondary p-2">' +
                 '<span class=" mt-1"><b>When data goes ...</b></span>' +
                 '<div class="custom-control custom-radio">' +
@@ -1004,8 +1004,8 @@ function deleteTrigger(deleteTriggerId, property_identifier, watch_sensor_name) 
 
                     //SETUP TRIGGER UI
                     // triggers set for this sensor or not
-                    console.log(data)
-                    console.log(data.associated_trigger)
+                    // console.log(data)
+                    // console.log(data.associated_trigger)
                     if (data.associated_trigger != "savedTrigger") {
                         var checkedAbove = ''
                         var checkedBelow = ''
@@ -1084,8 +1084,8 @@ function deleteTrigger(deleteTriggerId, property_identifier, watch_sensor_name) 
                     } else {
                         $("#triggerContainer").html(
                             '<form method="post" id="saveTriggerForm">' +
-                            '<input type="text" name="property_identifier_sensor" id="property_identifier_sensor" />' +
-                            '<input type="text" name="property_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<input type="hidden" name="property_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="hidden" name="property_identifier_actuator" id="property_identifier_actuator" />' +
                             '<div class="bg-body-secondary p-2">' +
                             '<span class=" mt-1"><b>When data goes ...</b></span>' +
                             '<div class="custom-control custom-radio">' +
