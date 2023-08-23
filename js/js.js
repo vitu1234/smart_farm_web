@@ -36,7 +36,7 @@ $("#user_register_form").on('submit', function (e) {
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 3000,
+                        timer: 5000,
                         timerProgressBar: true,
                         didOpen: (toast) => {
                             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -151,7 +151,7 @@ $("#login_form").on('submit', function (e) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -388,8 +388,83 @@ function populateDataOnSelectedSensor() {
 
                     //SETUP TRIGGER UI
                     // triggers set for this sensor or not
-                    if (data.associated_trigger.length > 0) {
-                        // $("#")
+                    console.log(data)
+                    console.log(data.associated_trigger)
+                    if (data.associated_trigger != "savedTrigger" ) {
+                        var checkedAbove =''
+                        var checkedBelow =''
+                        var checkedOn =''
+                        var checkedOff =''
+
+                        data.associated_trigger.property_trigger_type === "Above" ? checkedAbove="checked" : checkedBelow="checked"
+                        data.associated_trigger.property_trigger_action === "OFF" ? checkedOff="checked" : checkedOn="checked"
+                        $("#triggerContainer").html(
+                            '<form method="post" id="EditsaveTriggerForm" >' +
+                            '<input type="hidden" value="'+data.associated_trigger.property_trigger_id+'" name="property_trigger_id" id="property_trigger_id" />' +
+                            '<input type="hidden" value="'+data.associated_trigger.property_identifier_sensor+'" name="eproperty_identifier_sensor" id="property_identifier_sensor" />' +
+                            '<input type="hidden" value="'+data.associated_trigger.property_identifier_actuator+'" name="eproperty_identifier_actuator" id="property_identifier_actuator" />' +
+                            '<div class="bg-body-secondary p-2">' +
+                            '<span class=" mt-1"><b>When data goes ...</b></span>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio1" '+checkedAbove+' value="Above" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio1">Above</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio2" '+checkedBelow+' value="Below" name="eproperty_trigger_type" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio2">Below</label>' +
+                            '</div>' +
+                            '<span class=" mt-1"><b>This value:</b></span>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" class="form-control" value="'+data.associated_trigger.property_value_trigger+'" id="property_value_trigger" name="eproperty_value_trigger" min="0" value="" required>' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<div class="bg-body-secondary p-2 mt-2">' +
+                            '<span class=" mt-1"><b>Make this actuator ...</b></span>' +
+                            '<div class="form-group">' +
+                            '<select class="form-select" id="actuators_dropdown" name="eactuators_dropdown" required>' +
+                            '</select>' +
+                            '</div>' +
+
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio11" '+checkedOn+' value="ON" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio11">On</label>' +
+                            '</div>' +
+                            '<div class="custom-control custom-radio">' +
+                            '<input required type="radio" id="customRadio22" '+checkedOff+' value="OFF" name="eproperty_trigger_action" class="custom-control-input">' +
+                            '<label class="custom-control-label" for="customRadio22">Off</label>' +
+                            '</div>' +
+
+                            '<br />' +
+                            '<span class=" mt-1"><b>For these minutes ...</b></span><br />' +
+                            '<small class="text-danger">(Leave blank to keep action infinite)</small>' +
+                            '<div class="col-md-6 mb-3">' +
+                            '<input type="number" value="'+data.associated_trigger.property_trigger_period+'" class="form-control" id="property_trigger_period" name="eproperty_trigger_period" min="0" />' +
+                            '</div>' +
+                            '</div>' +
+
+                            '<button id="submitBtnTriggerEdit" type="submit" style="width: 100%" class="btn btn-outline-primary mt-1">Update</button>' +
+                            '<button id="submitBtnTriggerDelete" onclick="showDeleteTriggerConfirm(\''+data.associated_trigger.property_trigger_id+'\',\''+property_identifier+'\')" type="button" style="width: 100%" class="btn btn-outline-danger mt-2">Delete</button>' +
+                            '</form>'
+                        );
+
+                        var actuators_dropdown = ''
+                        if (data.connected_actuators.length > 0) {
+                            $.each(data.connected_actuators, function (key, value) {
+                                if(value.property_identifier == data.associated_trigger.property_identifier_actuator){
+                                    actuators_dropdown += '<option selected value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                                }else{
+                                    actuators_dropdown += '<option value="' + value.property_identifier + '<>' + value.wireless_device_identifier + '">' + value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase() + '</option>'
+                                }
+                            });
+
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        } else {
+                            $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                            $("#actuators_dropdown").html(actuators_dropdown)
+                        }
+                        
                     } else {
                         $("#triggerContainer").html(
                             '<form method="post" id="saveTriggerForm">' +
@@ -573,95 +648,12 @@ function periodicUpdate() {
     }
 }
 
-// login user
-$("#saveTriggerForm2").on('submit', function (e) {
-    alert("sdhdh")
-    var form_data = $(this).serialize();
-    $("#submitBtnTrigger").html('<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Saving...');
-    $.ajax({ //make ajax request to cart_process.php
-        headers: {
-            "accept": "application/json",
-        },
-        url: "backend/api/index.php",
-        type: "POST",
-        // crossDomain: true,
-        // xhrFields: { withCredentials: true },
-        dataType: "json", //expect json value from server
-        data: form_data
-    }).done(function (response) { //on Ajax success
-        // $("#btn_add").text('Register');
-        // $("#user_register_form")[0].reset();
-
-        $("#submitBtnTrigger").text('Save');
-        $("#saveTriggerForm")[0].reset();
-        if (response.isError === false) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            Toast.fire({
-                icon: 'success',
-                title: 'Saved successfully'
-            })
-
-            // setTimeout(function () {
-            //     window.location.href = 'dashboard.php';
-            // }, 1000);
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
-        }
-
-    }).fail(function (jqXHR, exception) {
-        var msg = '';
-        $("#login_btn").text('Sign in');
-        if (jqXHR.status === 0) {
-            msg = 'Network or API error.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Bad request. [404]';
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
-        } else {
-            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: msg,
-        })
-    });
 
 
-    e.preventDefault();
-    e.stopImmediatePropagation();
-})
-
-
-
-
-
-
+//add trigger
 $(document).on('submit', '#saveTriggerForm', function(e) {
     e.preventDefault(); // Prevent the default form submission
+    Swal.showLoading()
     var selectedValue = $("#sensors_dropdown").val()
     const [property_identifier_sensor, wireless_device_identifier, watch_sensor_name] = selectedValue.split("<>");
 
@@ -700,7 +692,7 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
     }).done(function (response) { //on Ajax success
         // $("#btn_add").text('Register');
         // $("#user_register_form")[0].reset();
-
+        Swal.close()
         $("#submitBtnTrigger").text('Save');
         $("#saveTriggerForm")[0].reset();
         if (response.isError === false) {
@@ -708,7 +700,7 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -735,7 +727,7 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
 
     }).fail(function (jqXHR, exception) {
         var msg = '';
-        $("#login_btn").text('Sign in');
+        $("#submitBtnTrigger").text('Save');
         if (jqXHR.status === 0) {
             msg = 'Network or API error.\n Verify Network.';
         } else if (jqXHR.status == 404) {
@@ -763,11 +755,206 @@ $(document).on('submit', '#saveTriggerForm', function(e) {
     e.stopImmediatePropagation();
 });
 
+//update trigger
+$(document).on('submit', '#EditsaveTriggerForm', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+    var selectedValue = $("#sensors_dropdown").val()
+    const [property_identifier_sensor, wireless_device_identifier, watch_sensor_name] = selectedValue.split("<>");
+
+    var selectedValueActuator = $("#actuators_dropdown").val()
+    const [property_identifier_actuator, wireless_device_identifier1] = selectedValueActuator.split("<>");
+
+    $("#property_identifier_sensor").val(property_identifier_sensor)
+    $("#property_identifier_actuator").val(property_identifier_actuator)
+
+    var form_data = $(this).serialize(); // Serialize the form data
+
+    // $.ajax({
+    //     url: 'your_form_processing_script.php',
+    //     method: 'POST',
+    //     data: formData,
+    //     success: function(response) {
+    //         // Handle the success response here
+    //     },
+    //     error: function(xhr, status, error) {
+    //         // Handle errors here
+    //     }
+    // });
 
 
+    $("#submitBtnTriggerEdit").html('<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Updating...');
+    $.ajax({ //make ajax request to cart_process.php
+        headers: {
+            "accept": "application/json",
+        },
+        url: "backend/api/index.php",
+        type: "POST",
+        // crossDomain: true,
+        // xhrFields: { withCredentials: true },
+        dataType: "json", //expect json value from server
+        data: form_data
+    }).done(function (response) { //on Ajax success
+        // $("#btn_add").text('Register');
+        // $("#user_register_form")[0].reset();
+
+        $("#submitBtnTriggerEdit").text('Update');
+        if (response.isError === false) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Updated successfully'
+            })
+
+            // setTimeout(function () {
+            //     window.location.href = 'dashboard.php';
+            // }, 1000);
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+
+    }).fail(function (jqXHR, exception) {
+        var msg = '';
+        $("#submitBtnTriggerEdit").text('Update');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+});
+
+function deleteTrigger(deleteTriggerId, property_identifier){
+    Swal.showLoading()
+    $("#submitBtnTriggerDelete").html('<span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>Deleting ...');
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+        },
+        url: "backend/api/index.php?deleteTriggerId="+deleteTriggerId+"&&delete_property_identifier="+property_identifier,
+        method: 'GET',
+        success: function (response) {
+            console.log(response)
+            $("#submitBtnTriggerDelete").html('Delete')
+            Swal.close()
+            if (response.isError === false) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+    
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Deleted trigger successfully'
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
 
 
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#submitBtnTriggerDelete").text('Delete');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
 
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+
+function showDeleteTriggerConfirm(deleteTriggerId, property_identifier){
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            deleteTrigger(deleteTriggerId,property_identifier)
+        }
+      })
+}
 
 
 
@@ -1061,7 +1248,7 @@ function set_device_action(device_id) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -1369,7 +1556,7 @@ $("#addFarmForm").on('submit', function (e) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
