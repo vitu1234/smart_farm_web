@@ -11,7 +11,7 @@ $api = $_ENV['API'];
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.108.0">
-    <title>Smart Farm</title>
+    <title>IoT App</title>
 
     <!--    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/cover/">-->
 
@@ -80,7 +80,7 @@ $api = $_ENV['API'];
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="mb-auto">
         <div>
-            <h3 class="float-md-start mb-0">Smart Farm</h3>
+            <h3 class="float-md-start mb-0">IoT App</h3>
             <nav class="nav nav-masthead justify-content-center float-md-end">
                 <a class="nav-link fw-bold py-1 px-0 " aria-current="page" href="index.php">Home</a>
                 <a class="nav-link fw-bold py-1 px-0" href="#">Contact</a>
@@ -91,12 +91,12 @@ $api = $_ENV['API'];
     </header>
 
     <main class="px-md-5 form-signin w-100 ">
-        <form method="post" id="login_form" class="px-md-5">
+        <form method="post" action="dash.php" id="login_form1" class="px-md-5">
             <!--      <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">-->
             <h5 class="h5 mb-3 fw-normal"><strong>Please sign in</strong></h5>
 
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" required name="email" placeholder="name@example.com">
+                <input type="text" class="form-control" id="email" required name="email" placeholder="name@example.com">
                 <label class="text-dark" for="email">Email address</label>
             </div>
 
@@ -114,8 +114,8 @@ $api = $_ENV['API'];
     <footer class="mt-auto text-white-50">
         <p>
             <script>document.write(new Date().getFullYear());</script> &copy; <span class="color-primary">DCN LAB</span>.
-            Designed by <a href="https://github.com/vitu1234" target="_blank"><span
-                class="text-light">Vitu Mafeni</span></a>
+            Designed by <a href="http://dcnlab.ssu.ac.kr/" target="_blank"><span
+                class="color-primary">DCN Lab</span></a>
         </p>
     </footer>
 </div>
