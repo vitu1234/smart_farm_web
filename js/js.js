@@ -1455,7 +1455,11 @@ function setupDashboadSwitches() {
 
 
                 data = response.data
-                $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                if (data.connected_sensors.length > 0) {
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                } else {
+                    $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+                }
 
 
                 //set actuator data
@@ -1557,7 +1561,7 @@ function toggleSwitch(property_identifier, value) {
             "accept": "application/json",
             // "Authorization": "JWT " + token
         },
-        url: "backend/api/index.php?value=" + value+"&&property_identifier_switch=" + property_identifier ,
+        url: "backend/api/index.php?value=" + value + "&&property_identifier_switch=" + property_identifier,
         method: 'GET',
         success: function (response) {
             console.log(response)

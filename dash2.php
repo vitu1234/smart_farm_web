@@ -49,19 +49,19 @@
             <div class="col-md-6  rounded">
                 <div class="card" style="height: 100px" id="countConnectedSensors">
 
-                    <div class="card-body shadow-lg  bg-success">
+                    <!-- <div class="card-body shadow-lg  bg-success">
                         <h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>1000</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
             <div class="col-md-6 ">
                 <div class="card " style="height: 100px" id="countConnectedActuators">
 
-                    <div class="card-body shadow-lg bg-danger">
+                    <!-- <div class="card-body shadow-lg bg-danger">
                         <h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>1000</b></small> Actuator(s)
                             Connected <span class="fa fa-plug" aria-hidden="true"></span></h4>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
