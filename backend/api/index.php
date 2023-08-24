@@ -19,13 +19,13 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name, property_trigger_status
+          property_name, property_active_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'read'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
+        wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
       ORDER BY property_name ASC;
     ");
 
@@ -34,13 +34,13 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name, property_trigger_status
+          property_name, property_active_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'readwrite'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+        wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status
       ORDER BY property_name ASC;
   ");
 
@@ -68,7 +68,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
         device_property.property_unit, 
         device_property.property_description, 
         DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
-        device_property.property_trigger_status 
+        device_property.property_active_status 
     FROM device_property_data
       INNER JOIN device_property
     ON device_property_data.property_identifier = device_property.property_identifier
@@ -106,7 +106,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
         device_property.property_unit, 
         device_property.property_description, 
         DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
-        device_property.property_trigger_status 
+        device_property.property_active_status 
     FROM device_property_data
       INNER JOIN device_property
     ON device_property_data.property_identifier = device_property.property_identifier
@@ -121,13 +121,13 @@ SELECT
     wireless_device_name, wireless_device.wireless_device_identifier,
     wireless_device.wireless_device_connection,
     property_identifier,
-    property_name, property_trigger_status
+    property_name, property_active_status
 FROM device_property
   INNER JOIN wireless_device
   ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
 WHERE device_property.property_access_mode = 'read'
 GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-  wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
+  wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
 ORDER BY property_name ASC;
 ");
 
@@ -136,13 +136,13 @@ SELECT
       wireless_device_name, wireless_device.wireless_device_identifier,
       wireless_device.wireless_device_connection,
       property_identifier,
-      property_name, property_trigger_status
+      property_name, property_active_status
   FROM device_property
     INNER JOIN wireless_device
     ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
   WHERE device_property.property_access_mode = 'readwrite'
   GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-    wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+    wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status
   ORDER BY property_name ASC;
 ");
 
@@ -200,13 +200,13 @@ SELECT
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name, property_trigger_status
+          property_name, property_active_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'readwrite'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+        wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status
       ORDER BY property_name ASC;
   ");
 
@@ -283,7 +283,7 @@ SELECT
           device_property.property_unit, 
           device_property.property_description, 
           DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
-          device_property.property_trigger_status 
+          device_property.property_active_status 
       FROM device_property_data
         INNER JOIN device_property
       ON device_property_data.property_identifier = device_property.property_identifier
@@ -321,7 +321,7 @@ SELECT
           device_property.property_unit, 
           device_property.property_description, 
           DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
-          device_property.property_trigger_status 
+          device_property.property_active_status 
       FROM device_property_data
         INNER JOIN device_property
       ON device_property_data.property_identifier = device_property.property_identifier
@@ -336,13 +336,13 @@ SELECT
       wireless_device_name, wireless_device.wireless_device_identifier,
       wireless_device.wireless_device_connection,
       property_identifier,
-      property_name, property_trigger_status
+      property_name, property_active_status
   FROM device_property
     INNER JOIN wireless_device
     ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
   WHERE device_property.property_access_mode = 'read'
   GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-    wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
+    wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
   ORDER BY property_name ASC;
   ");
   
@@ -351,13 +351,13 @@ SELECT
         wireless_device_name, wireless_device.wireless_device_identifier,
         wireless_device.wireless_device_connection,
         property_identifier,
-        property_name, property_trigger_status
+        property_name, property_active_status
     FROM device_property
       INNER JOIN wireless_device
       ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
     WHERE device_property.property_access_mode = 'readwrite'
     GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-      wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+      wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status
     ORDER BY property_name ASC;
   ");
 

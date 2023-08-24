@@ -352,6 +352,9 @@ function populateDataOnSelectedSensor() {
         url: "backend/api/index.php?property_identifier=" + property_identifier + "&&wireless_device_identifier=" + wireless_device_identifier,
         method: 'GET',
         success: function (response) {
+
+            console.log(response)
+
             Swal.close()
             if (response.isError === false) {
                 data = response.data
