@@ -9,7 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <style>
+        /* Style for the logo */
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
 
+        .logo-img {
+            width: 190px;
+            height: auto;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 
 <body class="bg-secondary-subtle">
@@ -17,14 +29,18 @@
         <div class="row mb-4">
             <div class="col-md-6">
 
-                <h1><i class="fas fa-microchip"></i> <u>A Dashboard for IoT</u> <i class="fas fa-microchip"></i>
-                </h1>
+                <h3>
+                <div class="logo-container">
+                    <img src="img/logodcn.png" class="logo-img" alt="Logo">
+                    <i class="fas fa-microchip"></i><u>A Dashboard for IoT</u> <i class="fas fa-microchip"></i>
+                </div>
+            </h3>
             </div>
             <div class="col-md-6">
 
-                <a class="float-end btn btn-outline-danger mx-2">Logout <i class="fas fa-sign-out-alt"></i></a>
+                <a href="login.php" class="float-end btn btn-outline-danger mx-2">Logout <i class="fas fa-sign-out-alt"></i></a>
                 <a class="float-end btn btn-outline-secondary">Settings <i class="fas fa-tools"></i></a>
-                <a class="float-end btn btn-outline-primary mx-2">Actuators <i class="fas fa-plug"></i></a>
+                <a href="dash2.php" class="float-end btn btn-outline-primary mx-2">Actuators <i class="fas fa-plug"></i></a>
             </div>
         </div>
         <div class="row mb-4">
@@ -209,9 +225,11 @@
             <div class="col-md-4 bg-light-subtle">
 
                 <div class="container-fluid shadow p-3 d-flex flex-column" style="width: 100%; height: 540px; border-radius: 5px; border: 5px dashed #cbcbcb">
-                <h4 class="text-warning-emphasis text-center">Status</h4>
+                    <h4 class="text-warning-emphasis text-center">Status</h4>
                     <div class="flex-grow-1"></div> <!-- This div will push the button to the bottom -->
-                    <button id="submitBtnDeleteSensor" style="width: 100%" class="btn btn-outline-danger mt-1">Deactivate Device</button>
+                    <div id="activateDeactivateProperty">
+                        
+                    </div>
                 </div>
             </div>
             <div class="col-md-2 bg-light"></div>
@@ -293,13 +311,10 @@
             $(document).ready(() => {
                 $("#bottom_container").hide()
                 populateDashboardSensors()
-                
+
                 var periodDelay = $("#selected_update").val()
                 setInterval(periodicUpdate, periodDelay);
             })
-
-
-           
         </script>
         <script src="js/js.js"></script>
     </main>

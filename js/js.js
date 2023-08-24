@@ -255,7 +255,7 @@ function populateDashboardSensors() {
         url: "backend/api/index.php?dashboard_setup=true",
         method: 'GET',
         success: function (response) {
-            console.log(response)
+            // console.log(response)
             Swal.close()
             if (response.isError === false) {
                 data = response.data
@@ -352,6 +352,9 @@ function populateDataOnSelectedSensor() {
         url: "backend/api/index.php?property_identifier=" + property_identifier + "&&wireless_device_identifier=" + wireless_device_identifier,
         method: 'GET',
         success: function (response) {
+
+            // console.log(response)
+
             Swal.close()
             if (response.isError === false) {
                 data = response.data
@@ -388,8 +391,8 @@ function populateDataOnSelectedSensor() {
 
                     //SETUP TRIGGER UI
                     // triggers set for this sensor or not
-                    console.log(data)
-                    console.log(data.associated_trigger)
+                    // console.log(data)
+                    // console.log(data.associated_trigger)
                     if (data.associated_trigger != "savedTrigger") {
                         var checkedAbove = ''
                         var checkedBelow = ''
@@ -526,6 +529,12 @@ function populateDataOnSelectedSensor() {
                             $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                             $("#actuators_dropdown").html(actuators_dropdown)
                         }
+                    }
+
+                    if (data.device_property_info.property_active_status == "Activated") {
+                        $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showDeactivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-danger mt-1">Deactivate Device</button>')
+                    } else {
+                        $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showActivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-success mt-1">Activate Device</button>')
                     }
 
                 } else {
@@ -1216,6 +1225,446 @@ function showDeleteTriggerConfirm(deleteTriggerId, property_identifier, watch_se
         }
     })
 }
+
+function showDeactivateDevicePropertyConfirm(device_property_id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "No new data will be published by this device!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, deactivate!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deactivateDeviceProperty(device_property_id)
+        }
+    })
+}
+
+
+function showActivateDevicePropertyConfirm(device_property_id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "New data will now be published by this device!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, activate!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            activateDeviceProperty(device_property_id)
+        }
+    })
+}
+
+
+function deactivateDeviceProperty(deactivateDeviceProperty_id) {
+    Swal.showLoading()
+    $("#submitBtnActiveStatusSensor").html('<span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>Deactivating ...');
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+        },
+        url: "backend/api/index.php?deactivateDeviceProperty_id=" + deactivateDeviceProperty_id,
+        method: 'GET',
+        success: function (response) {
+            $("#submitBtnActiveStatusSensor").html('Deactivate Device')
+            Swal.close()
+            if (response.isError === false) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Device deactivated successfully'
+                })
+
+                //resetup the dashboard
+                data = response.data
+                if (data.device_property_info.property_active_status == "Activated") {
+                    $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showDeactivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-danger mt-1">Deactivate Device</button>')
+                } else {
+                    $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showActivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-success mt-1">Activate Device</button>')
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#submitBtnActiveStatusSensor").text('Deactivate Device');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+function activateDeviceProperty(activateDeviceProperty_id) {
+    Swal.showLoading()
+    $("#submitBtnActiveStatusSensor").html('<span class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></span>Activating ...');
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+        },
+        url: "backend/api/index.php?activateDeviceProperty_id=" + activateDeviceProperty_id,
+        method: 'GET',
+        success: function (response) {
+            $("#submitBtnActiveStatusSensor").html('Activate Device')
+            Swal.close()
+            if (response.isError === false) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Device deactivated successfully'
+                })
+
+                //resetup the dashboard
+                data = response.data
+                if (data.device_property_info.property_active_status == "Activated") {
+                    $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showDeactivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-danger mt-1">Deactivate Device</button>')
+                } else {
+                    $("#activateDeactivateProperty").html('<button id="submitBtnActiveStatusSensor" onclick="showActivateDevicePropertyConfirm(\'' + data.device_property_info.device_property_id + '\')" style="width: 100%" class="btn btn-outline-success mt-1">Activate Device</button>')
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        $("#submitBtnActiveStatusSensor").text('Activate Device');
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+
+//SWITCHES/ACTUATORS
+function setupDashboadSwitches() {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            // "Authorization": "JWT " + token
+        },
+        url: "backend/api/index.php?dashboard2_setup=true",
+        method: 'GET',
+        success: function (response) {
+            Swal.close()
+            if (response.isError === false) {
+
+
+                data = response.data
+                $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+
+
+                //set actuator data
+
+                if (data.connected_actuators.length > 0) {
+                    var actuators = ''
+
+                    $.each(data.connected_actuators, function (key, value) {
+                        let btnStatus = ''
+                        if (value.property_state.toLowerCase() === "on") {
+                            btnStatus = '<button id="btnSwitch' + value.property_identifier + '" onclick="toggleSwitch(\'' + value.property_identifier + '\', \'OFF\')" class="btn btn-danger" id="turn-off">Turn Off</button>'
+                        } else {
+                            btnStatus = '<button id="btnSwitch' + value.property_identifier + '" onclick="toggleSwitch(\'' + value.property_identifier + '\',\'ON\')" class="btn btn-success" id="turn-off">Turn On</button>'
+                        }
+
+                        actuators += `
+                        <div class="col-md-4 bg-light-subtle mt-3">
+                            <div class="container-fluid shadow p-3 d-flex flex-column" style="width: 100%; border-radius: 5px; border: 5px dashed #cbcbcb">
+                                <h5 class="text-warning-emphasis text-center">${value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase()}</h5>
+                                <div class="flex-grow-1"></div> <!-- This div will push the button to the bottom -->
+
+                                <!-- Card for turning on/off the switch -->
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Switch Control</h5>
+                                        <p class="card-text">Click button to switch on or off</p>
+                                        <div class="d-grid gap-2">
+                                            ${btnStatus}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    });
+
+                    $("#actuatorsList").html(actuators)
+
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                } else {
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+}
+
+
+function toggleSwitch(property_identifier, value) {
+    Swal.showLoading()
+    $.ajax({
+        headers: {
+            "accept": "application/json",
+            // "Authorization": "JWT " + token
+        },
+        url: "backend/api/index.php?value=" + value+"&&property_identifier_switch=" + property_identifier ,
+        method: 'GET',
+        success: function (response) {
+            console.log(response)
+            Swal.close()
+            if (response.isError === false) {
+
+
+                data = response.data
+                $("#countConnectedSensors").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_sensors.length + '</b></small> Sensor(s) Connected <span class="fa fa-bolt" aria-hidden="true"></span> </h4></div>')
+
+
+                //set actuator data
+
+                if (data.connected_actuators.length > 0) {
+                    var actuators = ''
+
+                    $.each(data.connected_actuators, function (key, value) {
+                        let btnStatus = ''
+                        if (value.property_state.toLowerCase() === "on") {
+                            btnStatus = '<button id="btnSwitch' + value.property_identifier + '" onclick="toggleSwitch(\'' + value.property_identifier + '\', \'OFF\')" class="btn btn-danger" id="turn-off">Turn Off</button>'
+                        } else {
+                            btnStatus = '<button id="btnSwitch' + value.property_identifier + '" onclick="toggleSwitch(\'' + value.property_identifier + '\',\'ON\')" class="btn btn-success" id="turn-off">Turn On</button>'
+                        }
+
+                        actuators += `
+                            <div class="col-md-4 bg-light-subtle mt-3">
+                                <div class="container-fluid shadow p-3 d-flex flex-column" style="width: 100%; border-radius: 5px; border: 5px dashed #cbcbcb">
+                                    <h5 class="text-warning-emphasis text-center">${value.property_name + ' - ' + value.wireless_device_name + ' - ' + value.wireless_device_connection.toUpperCase()}</h5>
+                                    <div class="flex-grow-1"></div> <!-- This div will push the button to the bottom -->
+    
+                                    <!-- Card for turning on/off the switch -->
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Switch Control</h5>
+                                            <p class="card-text">Click button to switch on or off.</p>
+                                            <div class="d-grid gap-2">
+                                                ${btnStatus}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                    });
+
+                    $("#actuatorsList").html(actuators)
+
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                } else {
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There\'s a problem loading data from the server!',
+                })
+            }
+
+
+        },
+        error: function () {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        }
+    }).fail(function (jqXHR, exception) {
+        Swal.close()
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Network or API error.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Bad request [404]';
+        } else if (jqXHR.status == 401) {
+            msg = 'Bad request [Error code: 401]\n' + jqXHR.responseJSON.detail;
+            setTimeout(function () {
+                window.location.href = 'login.php';
+            }, 1500);
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = '[Error code: ' + jqXHR.status + '] \n' + jqXHR.responseJSON.detail;
+        }
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: msg,
+        })
+    });
+
+}
+
+
+
+
+
 
 
 
