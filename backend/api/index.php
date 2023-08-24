@@ -19,13 +19,13 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name
+          property_name, property_trigger_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'read'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name
+        wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
       ORDER BY property_name ASC;
     ");
 
@@ -34,13 +34,13 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name
+          property_name, property_trigger_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'readwrite'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name
+        wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
       ORDER BY property_name ASC;
   ");
 
@@ -55,71 +55,96 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
 } elseif (isset($_GET['property_identifier']) && !empty($_GET['property_identifier']) && isset($_GET['wireless_device_identifier']) && !empty($_GET['wireless_device_identifier'])) {
   $property_identifier = addslashes($_GET['property_identifier']);
   $wireless_device_identifier = addslashes($_GET['wireless_device_identifier']);
-  $device_data_rows = $operation->retrieveMany("
-  SELECT 
-    property_reading, property_unit,   DATE_FORMAT(property_last_seen, '%Hh:%i') as property_last_seen
-  FROM device_property
-  WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-  ORDER BY device_property_id DESC LIMIT 50;
-  ");
+  $device_data_rows = $operation->retrieveMany(
+    "
+    SELECT 
+      device_property.wireless_device_identifier, 
+        device_property.property_identifier, 
+        device_property.property_service_uuid, 
+        device_property.property_name, 
+        device_property.property_access_mode, 
+        device_property.property_reading, 
+        device_property.property_state, 
+        device_property.property_unit, 
+        device_property.property_description, 
+        DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
+        device_property.property_trigger_status 
+    FROM device_property_data
+      INNER JOIN device_property
+    ON device_property_data.property_identifier = device_property.property_identifier
 
-  $device_data = $operation->retrieveSingle("
-  SELECT 
-    *
-  FROM device_property
-  WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-  ORDER BY device_property_id DESC;
-  ");
+    WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_id DESC LIMIT 50;"
+  );
 
-  $device_data_total_records = $operation->countAll("
-  SELECT 
-    *
-  FROM device_property
-  WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-  ORDER BY device_property_id DESC;
-  ");
-  // $average = $operation->retrieveSingle("SELECT property_identifier, property_name, property_unit,property_reading, ROUND(AVG(property_reading)) AS average FROM `device_property` WHERE device_property.property_identifier = '".$property_identifier."' AND wireless_device_identifier= '".$wireless_device_identifier."'");
+  $device_data = $operation->retrieveSingle(
+    "
+    SELECT 
+      *
+    FROM device_property
+    WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'"
+  );
+
+  $device_data_total_records = $operation->countAll(
+    "
+    SELECT 
+      *
+    FROM device_property_data
+    WHERE device_property_data.property_identifier = '" . $property_identifier . "';"
+  );
+  // $average = $operation->retrieveSingle("SELECT property_identifier, property_name, property_unit,property_reading, ROUND(AVG(property_reading)) AS average FROM `device_property_data` WHERE device_property_data.property_identifier = '".$property_identifier."' AND wireless_device_identifier= '".$wireless_device_identifier."'");
   $average = $operation->retrieveSingle("
   SELECT subquery.property_identifier, subquery.property_name, subquery.property_unit, subquery.property_reading, ROUND(AVG(subquery.property_reading)) AS average
   FROM (
-      SELECT property_identifier, property_name, property_unit, property_reading
-      FROM device_property
-      WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-      LIMIT 0, 25
+      SELECT 
+        device_property.wireless_device_identifier, 
+        device_property.property_identifier, 
+        device_property.property_service_uuid, 
+        device_property.property_name, 
+        device_property.property_access_mode, 
+        device_property.property_reading, 
+        device_property.property_state, 
+        device_property.property_unit, 
+        device_property.property_description, 
+        DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
+        device_property.property_trigger_status 
+    FROM device_property_data
+      INNER JOIN device_property
+    ON device_property_data.property_identifier = device_property.property_identifier
+    WHERE device_property_data.property_identifier = '" . $property_identifier . "' 
   ) AS subquery
   GROUP BY subquery.property_identifier, subquery.property_name, subquery.property_unit, subquery.property_reading;
 ");
 
 
   $device_propertiesRead = $operation->retrieveMany("
-      SELECT 
-          wireless_device_name, wireless_device.wireless_device_identifier,
-          wireless_device.wireless_device_connection,
-          property_identifier,
-          property_name
-      FROM device_property
-        INNER JOIN wireless_device
-        ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-      WHERE device_property.property_access_mode = 'read'
-      GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name
-      ORDER BY property_name ASC;
-    ");
+SELECT 
+    wireless_device_name, wireless_device.wireless_device_identifier,
+    wireless_device.wireless_device_connection,
+    property_identifier,
+    property_name, property_trigger_status
+FROM device_property
+  INNER JOIN wireless_device
+  ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+WHERE device_property.property_access_mode = 'read'
+GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+  wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
+ORDER BY property_name ASC;
+");
 
   $device_propertiesReadWrite = $operation->retrieveMany("
-    SELECT 
-          wireless_device_name, wireless_device.wireless_device_identifier,
-          wireless_device.wireless_device_connection,
-          property_identifier,
-          property_name
-      FROM device_property
-        INNER JOIN wireless_device
-        ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-      WHERE device_property.property_access_mode = 'readwrite'
-      GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name
-      ORDER BY property_name ASC;
-  ");
+SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      property_name, property_trigger_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'readwrite'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+  ORDER BY property_name ASC;
+");
 
   $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='" . $property_identifier . "' ORDER BY property_trigger_id DESC LIMIT 1");
   $associated_trigger = "savedTrigger";
@@ -175,13 +200,13 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
           wireless_device_name, wireless_device.wireless_device_identifier,
           wireless_device.wireless_device_connection,
           property_identifier,
-          property_name
+          property_name, property_trigger_status
       FROM device_property
         INNER JOIN wireless_device
         ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
       WHERE device_property.property_access_mode = 'readwrite'
       GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-        wireless_device.wireless_device_identifier,property_identifier,property_name 
+        wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
       ORDER BY property_name ASC;
   ");
 
@@ -245,71 +270,96 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
 
     //setup dashboard again
 
-    $device_data_rows = $operation->retrieveMany("
-    SELECT 
-      property_reading, property_unit,   DATE_FORMAT(property_last_seen, '%Hh:%i') as property_last_seen
-    FROM device_property
-    WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-    ORDER BY device_property_id DESC LIMIT 50;
-    ");
+    $device_data_rows = $operation->retrieveMany(
+      "
+      SELECT 
+        device_property.wireless_device_identifier, 
+          device_property.property_identifier, 
+          device_property.property_service_uuid, 
+          device_property.property_name, 
+          device_property.property_access_mode, 
+          device_property.property_reading, 
+          device_property.property_state, 
+          device_property.property_unit, 
+          device_property.property_description, 
+          DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
+          device_property.property_trigger_status 
+      FROM device_property_data
+        INNER JOIN device_property
+      ON device_property_data.property_identifier = device_property.property_identifier
+  
+      WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_id DESC LIMIT 50;"
+    );
+    $device_data = $operation->retrieveSingle(
+      "
+      SELECT 
+        *
+      FROM device_property
+      WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'"
+    );
+  
 
-    $device_data = $operation->retrieveSingle("
-    SELECT 
-      *
-    FROM device_property
-    WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-    ORDER BY device_property_id DESC;
-    ");
-
-    $device_data_total_records = $operation->countAll("
-    SELECT 
-      *
-    FROM device_property
-    WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-    ORDER BY device_property_id DESC;
-    ");
-    // $average = $operation->retrieveSingle("SELECT property_identifier, property_name, property_unit,property_reading, ROUND(AVG(property_reading)) AS average FROM `device_property` WHERE device_property.property_identifier = '".$property_identifier."' AND wireless_device_identifier= '".$wireless_device_identifier."'");
+    $device_data_total_records = $operation->countAll(
+      "
+      SELECT 
+        *
+      FROM device_property_data
+      WHERE device_property_data.property_identifier = '" . $property_identifier . "';"
+    );
+    // $average = $operation->retrieveSingle("SELECT property_identifier, property_name, property_unit,property_reading, ROUND(AVG(property_reading)) AS average FROM `device_property_data` WHERE device_property_data.property_identifier = '".$property_identifier."' AND wireless_device_identifier= '".$wireless_device_identifier."'");
     $average = $operation->retrieveSingle("
     SELECT subquery.property_identifier, subquery.property_name, subquery.property_unit, subquery.property_reading, ROUND(AVG(subquery.property_reading)) AS average
     FROM (
-        SELECT property_identifier, property_name, property_unit, property_reading
-        FROM device_property
-        WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'
-        LIMIT 0, 25
+        SELECT 
+          device_property.wireless_device_identifier, 
+          device_property.property_identifier, 
+          device_property.property_service_uuid, 
+          device_property.property_name, 
+          device_property.property_access_mode, 
+          device_property.property_reading, 
+          device_property.property_state, 
+          device_property.property_unit, 
+          device_property.property_description, 
+          DATE_FORMAT(device_property_data.property_last_seen, '%Hh:%i') as property_last_seen,
+          device_property.property_trigger_status 
+      FROM device_property_data
+        INNER JOIN device_property
+      ON device_property_data.property_identifier = device_property.property_identifier
+      WHERE device_property_data.property_identifier = '" . $property_identifier . "' 
     ) AS subquery
     GROUP BY subquery.property_identifier, subquery.property_name, subquery.property_unit, subquery.property_reading;
   ");
 
 
-    $device_propertiesRead = $operation->retrieveMany("
-        SELECT 
-            wireless_device_name, wireless_device.wireless_device_identifier,
-            wireless_device.wireless_device_connection,
-            property_identifier,
-            property_name
-        FROM device_property
-          INNER JOIN wireless_device
-          ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-        WHERE device_property.property_access_mode = 'read'
-        GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-          wireless_device.wireless_device_identifier,property_identifier,property_name
-        ORDER BY property_name ASC;
-      ");
-
+  $device_propertiesRead = $operation->retrieveMany("
+  SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      property_name, property_trigger_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'read'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name,property_trigger_status
+  ORDER BY property_name ASC;
+  ");
+  
     $device_propertiesReadWrite = $operation->retrieveMany("
-      SELECT 
-            wireless_device_name, wireless_device.wireless_device_identifier,
-            wireless_device.wireless_device_connection,
-            property_identifier,
-            property_name
-        FROM device_property
-          INNER JOIN wireless_device
-          ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-        WHERE device_property.property_access_mode = 'readwrite'
-        GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-          wireless_device.wireless_device_identifier,property_identifier,property_name 
-        ORDER BY property_name ASC;
-    ");
+  SELECT 
+        wireless_device_name, wireless_device.wireless_device_identifier,
+        wireless_device.wireless_device_connection,
+        property_identifier,
+        property_name, property_trigger_status
+    FROM device_property
+      INNER JOIN wireless_device
+      ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+    WHERE device_property.property_access_mode = 'readwrite'
+    GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+      wireless_device.wireless_device_identifier,property_identifier,property_name, property_trigger_status
+    ORDER BY property_name ASC;
+  ");
 
     $savedTrigger = $operation->retrieveSingle("SELECT * FROM `property_trigger` WHERE property_identifier_sensor='" . $property_identifier . "' ORDER BY property_trigger_id DESC LIMIT 1");
     $associated_trigger = "savedTrigger";
@@ -341,7 +391,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
   }
 } elseif (isset($_GET['deactivateDeviceProperty_id']) && !empty($_GET['deactivateDeviceProperty_id'])) {
   $deactivateDeviceProperty_id = addslashes($_GET['deactivateDeviceProperty_id']);
-  $table = "device_property";
+  $table = "device_property_data";
   $data = [
     "property_active_status" => "Deactivated"
   ];
@@ -350,8 +400,8 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property
-      WHERE device_property.device_property_id = '" . $deactivateDeviceProperty_id . "';
+      FROM device_property_data
+      WHERE device_property_data.device_property_id = '" . $deactivateDeviceProperty_id . "';
     ");
 
     $array_data = array(
@@ -363,7 +413,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
   }
 } elseif (isset($_GET['activateDeviceProperty_id']) && !empty($_GET['activateDeviceProperty_id'])) {
   $activateDeviceProperty_id = addslashes($_GET['activateDeviceProperty_id']);
-  $table = "device_property";
+  $table = "device_property_data";
   $data = [
     "property_active_status" => "Activated"
   ];
@@ -372,8 +422,8 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property
-      WHERE device_property.device_property_id = '" . $activateDeviceProperty_id . "';
+      FROM device_property_data
+      WHERE device_property_data.device_property_id = '" . $activateDeviceProperty_id . "';
     ");
 
     $array_data = array(
@@ -390,10 +440,10 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
         wireless_device.wireless_device_connection,
         property_identifier,
         property_name
-    FROM device_property
+    FROM device_property_data
       INNER JOIN wireless_device
-      ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-    WHERE device_property.property_access_mode = 'read'
+      ON device_property_data.wireless_device_identifier = wireless_device.wireless_device_identifier
+    WHERE device_property_data.property_access_mode = 'read'
     GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
       wireless_device.wireless_device_identifier,property_identifier,property_name
     ORDER BY property_name ASC;
@@ -405,10 +455,10 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
         wireless_device.wireless_device_connection,
         property_identifier,
         property_name, property_state
-    FROM device_property
+    FROM device_property_data
       INNER JOIN wireless_device
-      ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
-    WHERE device_property.property_access_mode = 'readwrite'
+      ON device_property_data.wireless_device_identifier = wireless_device.wireless_device_identifier
+    WHERE device_property_data.property_access_mode = 'readwrite'
     GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
       wireless_device.wireless_device_identifier,property_identifier,property_name,property_state
     ORDER BY property_name ASC;
@@ -425,7 +475,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
 } elseif (isset($_GET['property_identifier_switch']) && !empty($_GET['property_identifier_switch']) && isset($_GET['value']) && !empty($_GET['property_identifier_switch'])) {
 
   $property_identifier_switch = addslashes($_GET['property_identifier_switch']);
-  $table = "device_property";
+  $table = "device_property_data";
   $data = [
     "property_state" => "Activated"
   ];
@@ -434,8 +484,8 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property
-      WHERE device_property.device_property_id = '" . $property_identifier_switch . "';
+      FROM device_property_data
+      WHERE device_property_data.device_property_id = '" . $property_identifier_switch . "';
     ");
 
     $array_data = array(
