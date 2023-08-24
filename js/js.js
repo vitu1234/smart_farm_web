@@ -353,7 +353,7 @@ function populateDataOnSelectedSensor() {
         method: 'GET',
         success: function (response) {
 
-            console.log(response)
+            // console.log(response)
 
             Swal.close()
             if (response.isError === false) {
@@ -1243,7 +1243,7 @@ function showDeactivateDevicePropertyConfirm(device_property_id) {
 }
 
 
-function showActivateDevicePropertyConfirm(deactivateDeviceProperty) {
+function showActivateDevicePropertyConfirm(device_property_id) {
     Swal.fire({
         title: 'Are you sure?',
         text: "New data will now be published by this device!",
@@ -1270,7 +1270,6 @@ function deactivateDeviceProperty(deactivateDeviceProperty_id) {
         url: "backend/api/index.php?deactivateDeviceProperty_id=" + deactivateDeviceProperty_id,
         method: 'GET',
         success: function (response) {
-            console.log(response)
             $("#submitBtnActiveStatusSensor").html('Deactivate Device')
             Swal.close()
             if (response.isError === false) {
@@ -1360,7 +1359,6 @@ function activateDeviceProperty(activateDeviceProperty_id) {
         url: "backend/api/index.php?activateDeviceProperty_id=" + activateDeviceProperty_id,
         method: 'GET',
         success: function (response) {
-            console.log(response)
             $("#submitBtnActiveStatusSensor").html('Activate Device')
             Swal.close()
             if (response.isError === false) {
@@ -1483,7 +1481,7 @@ function setupDashboadSwitches() {
                                 <div class="card mt-3">
                                     <div class="card-body">
                                         <h5 class="card-title">Switch Control</h5>
-                                        <p class="card-text">Toggle the switch on or off.</p>
+                                        <p class="card-text">Click button to switch on or off</p>
                                         <div class="d-grid gap-2">
                                             ${btnStatus}
                                         </div>
@@ -1496,9 +1494,9 @@ function setupDashboadSwitches() {
 
                     $("#actuatorsList").html(actuators)
 
-                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                 } else {
-                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                 }
 
             } else {
@@ -1559,7 +1557,7 @@ function toggleSwitch(property_identifier, value) {
             "accept": "application/json",
             // "Authorization": "JWT " + token
         },
-        url: "backend/api/index.php?dashboard2_setup=property_identifier_switch=" + property_identifier + "&&value=" + value,
+        url: "backend/api/index.php?value=" + value+"&&property_identifier_switch=" + property_identifier ,
         method: 'GET',
         success: function (response) {
             console.log(response)
@@ -1594,7 +1592,7 @@ function toggleSwitch(property_identifier, value) {
                                     <div class="card mt-3">
                                         <div class="card-body">
                                             <h5 class="card-title">Switch Control</h5>
-                                            <p class="card-text">Toggle the switch on or off.</p>
+                                            <p class="card-text">Click button to switch on or off.</p>
                                             <div class="d-grid gap-2">
                                                 ${btnStatus}
                                             </div>
@@ -1607,9 +1605,9 @@ function toggleSwitch(property_identifier, value) {
 
                     $("#actuatorsList").html(actuators)
 
-                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-success" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                 } else {
-                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 8%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
+                    $("#countConnectedActuators").html('<div class="card-body shadow-lg  bg-danger" ><h4 class="text-light fw-bold" style="margin-top: 4%; text-align: center; font-size: 17px"><small><b>' + data.connected_actuators.length + '</b></small> Actuator(s) Connected <span class="fa fa-plug" aria-hidden="true"></span> </h4></div>')
                 }
 
             } else {

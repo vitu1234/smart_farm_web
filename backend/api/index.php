@@ -297,7 +297,7 @@ SELECT
       FROM device_property
       WHERE device_property.property_identifier = '" . $property_identifier . "' AND wireless_device_identifier= '" . $wireless_device_identifier . "'"
     );
-  
+
 
     $device_data_total_records = $operation->countAll(
       "
@@ -331,7 +331,7 @@ SELECT
   ");
 
 
-  $device_propertiesRead = $operation->retrieveMany("
+    $device_propertiesRead = $operation->retrieveMany("
   SELECT 
       wireless_device_name, wireless_device.wireless_device_identifier,
       wireless_device.wireless_device_connection,
@@ -345,7 +345,7 @@ SELECT
     wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
   ORDER BY property_name ASC;
   ");
-  
+
     $device_propertiesReadWrite = $operation->retrieveMany("
   SELECT 
         wireless_device_name, wireless_device.wireless_device_identifier,
@@ -391,7 +391,7 @@ SELECT
   }
 } elseif (isset($_GET['deactivateDeviceProperty_id']) && !empty($_GET['deactivateDeviceProperty_id'])) {
   $deactivateDeviceProperty_id = addslashes($_GET['deactivateDeviceProperty_id']);
-  $table = "device_property_data";
+  $table = "device_property";
   $data = [
     "property_active_status" => "Deactivated"
   ];
@@ -400,8 +400,8 @@ SELECT
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property_data
-      WHERE device_property_data.device_property_id = '" . $deactivateDeviceProperty_id . "';
+      FROM device_property
+      WHERE device_property.device_property_id = '" . $deactivateDeviceProperty_id . "';
     ");
 
     $array_data = array(
@@ -413,7 +413,7 @@ SELECT
   }
 } elseif (isset($_GET['activateDeviceProperty_id']) && !empty($_GET['activateDeviceProperty_id'])) {
   $activateDeviceProperty_id = addslashes($_GET['activateDeviceProperty_id']);
-  $table = "device_property_data";
+  $table = "device_property";
   $data = [
     "property_active_status" => "Activated"
   ];
@@ -422,8 +422,8 @@ SELECT
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property_data
-      WHERE device_property_data.device_property_id = '" . $activateDeviceProperty_id . "';
+      FROM device_property
+      WHERE device_property.device_property_id = '" . $activateDeviceProperty_id . "';
     ");
 
     $array_data = array(
@@ -435,63 +435,99 @@ SELECT
   }
 } elseif (isset($_GET['dashboard2_setup']) && !empty($_GET['dashboard2_setup']) && $_GET['dashboard2_setup'] == 'true') {
   $device_propertiesRead = $operation->retrieveMany("
-    SELECT 
-        wireless_device_name, wireless_device.wireless_device_identifier,
-        wireless_device.wireless_device_connection,
-        property_identifier,
-        property_name
-    FROM device_property_data
-      INNER JOIN wireless_device
-      ON device_property_data.wireless_device_identifier = wireless_device.wireless_device_identifier
-    WHERE device_property_data.property_access_mode = 'read'
-    GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-      wireless_device.wireless_device_identifier,property_identifier,property_name
-    ORDER BY property_name ASC;
-  ");
+  SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      property_name, property_active_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'read'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
+  ORDER BY property_name ASC;
+");
 
   $device_propertiesReadWrite = $operation->retrieveMany("
-  SELECT 
-        wireless_device_name, wireless_device.wireless_device_identifier,
-        wireless_device.wireless_device_connection,
-        property_identifier,
-        property_name, property_state
-    FROM device_property_data
-      INNER JOIN wireless_device
-      ON device_property_data.wireless_device_identifier = wireless_device.wireless_device_identifier
-    WHERE device_property_data.property_access_mode = 'readwrite'
-    GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
-      wireless_device.wireless_device_identifier,property_identifier,property_name,property_state
-    ORDER BY property_name ASC;
-  ");
+SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      device_property.property_state,
+      property_name, property_active_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'readwrite'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status,device_property.property_state
+  ORDER BY property_name ASC;
+");
 
   $data = array(
     "connected_sensors" => $device_propertiesRead,
     "connected_actuators" => $device_propertiesReadWrite
   );
 
-
-
   echo json_encode(["isError" => false, "msg" => "Switch devices", "data" => $data]);
-} elseif (isset($_GET['property_identifier_switch']) && !empty($_GET['property_identifier_switch']) && isset($_GET['value']) && !empty($_GET['property_identifier_switch'])) {
+} elseif (isset($_GET['property_identifier_switch']) && !empty($_GET['property_identifier_switch']) && isset($_GET['value']) && !empty($_GET['value'])) {
 
   $property_identifier_switch = addslashes($_GET['property_identifier_switch']);
-  $table = "device_property_data";
+  $table = "device_property";
   $data = [
-    "property_state" => "Activated"
+    "property_state" => addslashes($_GET['value'])
   ];
-  $where = "device_property_id = " . $property_identifier_switch;
+  $where = "property_identifier = '" . $property_identifier_switch . "'";
   if ($operation->updateData($table, $data, $where)) {
     $device_data = $operation->retrieveSingle("
       SELECT 
       *
-      FROM device_property_data
-      WHERE device_property_data.device_property_id = '" . $property_identifier_switch . "';
+      FROM device_property
+      WHERE property_identifier = '" . $property_identifier_switch . "';
     ");
 
+    $device_propertiesRead = $operation->retrieveMany("
+  SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      property_name, property_active_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'read'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name,property_active_status
+  ORDER BY property_name ASC;
+");
+
+    $device_propertiesReadWrite = $operation->retrieveMany("
+SELECT 
+      wireless_device_name, wireless_device.wireless_device_identifier,
+      wireless_device.wireless_device_connection,
+      property_identifier,
+      device_property.property_state,
+      property_name, property_active_status
+  FROM device_property
+    INNER JOIN wireless_device
+    ON device_property.wireless_device_identifier = wireless_device.wireless_device_identifier
+  WHERE device_property.property_access_mode = 'readwrite'
+  GROUP BY wireless_device.wireless_device_connection,wireless_device_name, 
+    wireless_device.wireless_device_identifier,property_identifier,property_name, property_active_status,device_property.property_state
+  ORDER BY property_name ASC;
+");
+
+
+
+
     $array_data = array(
-      "device_property_info" => $device_data
+      "device_property_info" => $device_data,
+      "connected_sensors" => $device_propertiesRead,
+      "connected_actuators" => $device_propertiesReadWrite
     );
-    echo json_encode(["isError" => false, "msg" => "Device activated!", "data" => $array_data]);
+
+    echo json_encode(["isError" => false, "msg" => "Device turned " . $_GET['value'], "data" => $array_data]);
   } else {
     echo json_encode(["isError" => true, "msg" => "Failed to deactivate device!"]);
   }
