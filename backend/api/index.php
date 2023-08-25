@@ -1,7 +1,29 @@
 <?php
+use Bluerhinos\phpMQTT;
+require('../../vendor/autoload.php');
+
+use Workerman\Worker;
+
 header('Content-type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
+
+
+$server   = '192.168.12.225';
+$port     = 1883;
+$clientId = 'client-publisher-dashboard';
+$username = 'flotta';                   // set your username
+$password = 'flotta';                   // set your password
+
+
+
+const MQTT_HOST = 'localhost';
+const MQTT_PORT = 1883;
+const MQTT_CLIENT_ID = 'PHP-MQTT-client';
+const MQTT_USER = 'flotta';
+const MQTT_PASSWORD = 'flotta';
+const TOPIC = 'php/test';
+
 
 include("../connection/Functions.php");
 $operation = new Functions();
@@ -73,7 +95,7 @@ if (isset($_GET['dashboard_setup']) && !empty($_GET['dashboard_setup']) && $_GET
       INNER JOIN device_property
     ON device_property_data.property_identifier = device_property.property_identifier
 
-    WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_id DESC LIMIT 50;"
+    WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_data_id DESC LIMIT 50;"
   );
 
   $device_data = $operation->retrieveSingle(
@@ -288,7 +310,7 @@ SELECT
         INNER JOIN device_property
       ON device_property_data.property_identifier = device_property.property_identifier
   
-      WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_id DESC LIMIT 50;"
+      WHERE device_property_data.property_identifier = '" . $property_identifier . "' ORDER BY device_property_data_id DESC LIMIT 50;"
     );
     $device_data = $operation->retrieveSingle(
       "
@@ -526,6 +548,31 @@ SELECT
       "connected_sensors" => $device_propertiesRead,
       "connected_actuators" => $device_propertiesReadWrite
     );
+
+
+    require('phpMQTT.php');
+    $mqtt = new \Bluerhinos\phpMQTT('localhost', 1883, 'phpMQTT_publisher');
+    if ($mqtt->connect(true, NULL, 'flotta', 'flotta')) {
+
+        //GET DEVICE INFO AND PROPERTY INFO
+        $wireless_device_identifier = $device_data['wireless_device_identifier'];
+        $wireless_device_info = $operation->retrieveSingle("SELECT *FROM wireless_device WHERE wireless_device_identifier ='".$wireless_device_identifier."'");
+        $wireless_device_properties = $operation->retrieveSingle("SELECT *FROM device_property WHERE property_identifier ='".$property_identifier_switch."'");
+        $to_publish = array(
+          "wireless_device_identifier"=>$wireless_device_info['wireless_device_identifier'],
+          "wireless_device_name"=>$wireless_device_info['wireless_device_name'],
+          "device_properties"=>array($wireless_device_properties)
+        );
+
+        // Connected successfully, publish a message
+        $topic = 'cloud/plugin/downstream/wifi';
+        $message = 'Hello, MQTT!';
+        $mqtt->publish($topic, json_encode($to_publish), 0);
+        $mqtt->close();
+    }
+
+    // printf("client connected\n");
+
 
     echo json_encode(["isError" => false, "msg" => "Device turned " . $_GET['value'], "data" => $array_data]);
   } else {
